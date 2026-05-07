@@ -13,11 +13,9 @@ body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#F0EDE6;min-hei
 .hdr-deco{position:absolute;top:-10px;right:-10px;width:70px;height:70px;border-radius:50%;background:#C9B8E8;opacity:.5}
 .hdr-deco2{position:absolute;bottom:-15px;right:20px;width:45px;height:45px;border-radius:50%;background:#F2C4CE;opacity:.5}
 .hdr h1{font-size:28px;font-weight:800;color:#3ABFAA;line-height:1.2;position:relative}
-.hdr p{font-size:13px;font-weight:400;color:#2D2B38;opacity:.6;margin-top:6px;line-height:1.7;position:relative}
+.hdr p{font-size:13px;color:#2D2B38;opacity:.6;margin-top:6px;line-height:1.7;position:relative}
 .card{background:#fff;border:1px solid #EDE8E0;border-radius:18px;padding:16px;position:relative;overflow:hidden}
-.card.active{border:1.5px solid #3ABFAA}
-.card.done{border:1.5px solid #A8D8C8}
-.card.error{border:1.5px solid #E8826A}
+.card.active{border:1.5px solid #3ABFAA}.card.done{border:1.5px solid #A8D8C8}.card.error{border:1.5px solid #E8826A}
 .brief-card{background:#fff;border:1px dashed #D8C8B0;border-radius:18px;padding:16px;position:relative;overflow:hidden}
 .brief-deco{position:absolute;bottom:-12px;right:-12px;width:55px;height:55px;border-radius:50%;background:#A8D8C8;opacity:.4}
 .sec-label{font-size:11px;font-weight:500;color:#2D2B38;opacity:.5;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
@@ -26,16 +24,19 @@ body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#F0EDE6;min-hei
 select,input,textarea{width:100%;font-size:13px;font-family:'Plus Jakarta Sans',Arial,sans-serif;border-radius:100px;border:1px solid #D8C8B0;background:#F0EDE6;color:#2D2B38;padding:8px 14px;outline:none;transition:border-color .2s}
 textarea{border-radius:14px;resize:vertical;min-height:52px;line-height:1.5}
 select:focus,input:focus,textarea:focus{border-color:#3ABFAA}
+select option:disabled{color:#aaa}
+.arq-desc{margin-top:8px;padding:10px 12px;background:#F0EDE6;border:1px dashed #D8C8B0;border-radius:12px;font-size:11px;line-height:1.6;color:#2D2B38;display:none}
+.arq-desc.on{display:block}
+.arq-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-bottom:6px}
+.ab-a{background:#DFF2EB;color:#1A8070}.ab-b{background:#EDE8F7;color:#7050B0}.ab-d{background:#FAE8EC;color:#C05070}
 .agent-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;flex-shrink:0;letter-spacing:.04em}
-.b1{background:#DFF2EB;color:#1A8070}.b2{background:#FAE8EC;color:#C05070}
-.b3{background:#DFF2EB;color:#1A8070}.b4{background:#FDE9D4;color:#C07030}
+.badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;flex-shrink:0}
+.b1{background:#DFF2EB;color:#1A8070}.b2{background:#FAE8EC;color:#C05070}.b3{background:#DFF2EB;color:#1A8070}.b4{background:#FDE9D4;color:#C07030}
 .agent-title{font-size:14px;font-weight:700;color:#2D2B38;flex:1}
 .dot{width:7px;height:7px;border-radius:50%;background:#D8C8B0;flex-shrink:0;transition:background .3s}
-.active .dot{background:#3ABFAA;animation:pulse 1.2s infinite}
-.done .dot{background:#A8D8C8}.error .dot{background:#E8826A}
+.active .dot{background:#3ABFAA;animation:pulse 1.2s infinite}.done .dot{background:#A8D8C8}.error .dot{background:#E8826A}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.agent-desc{font-size:12px;font-weight:400;color:#2D2B38;opacity:.6;margin-bottom:12px;line-height:1.7}
+.agent-desc{font-size:12px;color:#2D2B38;opacity:.6;margin-bottom:12px;line-height:1.7}
 .out-box{background:#F0EDE6;border:1px dashed #D8C8B0;border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.7;color:#2D2B38;opacity:.5;min-height:52px;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow-y:auto;font-family:'Plus Jakarta Sans',Arial,sans-serif}
 .out-box.has{opacity:1}
 .btn-copy{margin-top:8px;font-size:11px;font-weight:700;padding:4px 14px;border-radius:100px;border:1.5px solid #3ABFAA;background:transparent;color:#3ABFAA;cursor:pointer;font-family:'Plus Jakarta Sans',Arial,sans-serif;transition:all .15s}
@@ -60,7 +61,7 @@ select:focus,input:focus,textarea:focus{border-color:#3ABFAA}
 .meta-grid{display:flex;flex-direction:column;gap:8px}
 .meta-blk{background:#F0EDE6;border:1px dashed #D8C8B0;border-radius:14px;padding:10px 12px}
 .meta-blk-title{font-size:10px;font-weight:700;color:#C07030;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
-.meta-blk-val{font-size:12px;font-weight:400;color:#2D2B38;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.meta-blk-val{font-size:12px;color:#2D2B38;line-height:1.7;white-space:pre-wrap;word-break:break-word}
 .meta-copy{margin-top:7px;font-size:11px;font-weight:700;padding:3px 12px;border-radius:100px;border:1.5px solid #F5C49A;background:transparent;color:#C07030;cursor:pointer;font-family:'Plus Jakarta Sans',Arial,sans-serif;transition:all .15s}
 .meta-copy:hover{background:#FDE9D4}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:#fff;border:1.5px solid #3ABFAA;color:#1A8070;font-size:12px;font-weight:600;padding:7px 18px;border-radius:100px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;z-index:999;font-family:'Plus Jakarta Sans',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.08)}
@@ -69,68 +70,142 @@ select:focus,input:focus,textarea:focus{border-color:#3ABFAA}
 </head>
 <body>
 <div class="wrap">
+
   <div class="hdr">
     <div class="hdr-deco"></div><div class="hdr-deco2"></div>
     <h1>Ad Pipeline</h1>
     <p>Guion · Personajes · NanoBanana · Meta Ads</p>
   </div>
+
   <div class="brief-card">
     <div class="brief-deco"></div>
     <div class="sec-label">Brief del anuncio</div>
-    <div class="field"><label>Plataforma</label><select id="plataforma"><option>Instagram Reels</option><option>TikTok</option><option>YouTube Shorts</option><option>Facebook Feed</option><option>Facebook Reels</option></select></div>
-    <div class="field"><label>Duración</label><select id="duracion"><option>15 segundos</option><option selected>30 segundos</option><option>45 segundos</option><option>60 segundos</option></select></div>
-    <div class="field"><label>Formato visual</label><input type="text" id="formato" placeholder="Cinemático con b-rolls, UGC, slice of life..."></div>
-    <div class="field"><label>Arquetipo del personaje</label><input type="text" id="arquetipo" placeholder="Papá 38 años, gerente, El Poblado..."></div>
-    <div class="field"><label>Ángulo específico (opcional)</label><textarea id="angulo" placeholder="Ej: el hijo llama al papá desde el recreo..."></textarea></div>
+    <div class="field">
+      <label>Plataforma</label>
+      <select id="plataforma">
+        <option>Instagram Reels</option><option>TikTok</option><option>YouTube Shorts</option><option>Facebook Feed</option><option>Facebook Reels</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Duración</label>
+      <select id="duracion">
+        <option>15 segundos</option><option selected>30 segundos</option><option>45 segundos</option><option>60 segundos</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Arquetipo</label>
+      <select id="arquetipo" onchange="onArq()">
+        <option value="">— elige el arquetipo —</option>
+        <option value="A">A · Cinemático emocional</option>
+        <option value="B">B · Estático conceptual</option>
+        <option value="D">D · La voz del hijo ★ mayor conversión</option>
+        <option value="C" disabled>C · UGC padre a cámara — no convierte para Kiper</option>
+      </select>
+      <div class="arq-desc" id="arqDesc"></div>
+    </div>
+    <div class="field">
+      <label>Personaje principal</label>
+      <input type="text" id="personaje" placeholder="Papá 38 años, gerente, El Poblado...">
+    </div>
+    <div class="field">
+      <label>Ángulo específico (opcional)</label>
+      <textarea id="angulo" placeholder="Ej: el hijo llama al papá desde el recreo..."></textarea>
+    </div>
   </div>
+
   <div class="card" id="card1">
     <div class="agent-hdr"><span class="badge b1">Agente 01</span><span class="agent-title">Director Creativo</span><span class="dot"></span></div>
     <p class="agent-desc">3 versiones del guion con segundo a segundo, tomas y detalles visuales.</p>
-    <div class="vpick" id="vpick"><span class="vlabel">Usar →</span><button class="vbtn sel" id="vb1" onclick="selV(1)">Versión 1</button><button class="vbtn" id="vb2" onclick="selV(2)">Versión 2</button><button class="vbtn" id="vb3" onclick="selV(3)">Versión 3</button></div>
+    <div class="vpick" id="vpick">
+      <span class="vlabel">Usar →</span>
+      <button class="vbtn sel" id="vb1" onclick="selV(1)">Versión 1</button>
+      <button class="vbtn" id="vb2" onclick="selV(2)">Versión 2</button>
+      <button class="vbtn" id="vb3" onclick="selV(3)">Versión 3</button>
+    </div>
     <div class="sec-label">Output</div>
     <div class="out-box" id="out1">— esperando ejecución —</div>
     <button class="btn-copy" onclick="cpBox('out1')">Copiar</button>
   </div>
+
   <div class="connector">↓</div>
+
   <div class="card" id="card2">
     <div class="agent-hdr"><span class="badge b2">Agente 02</span><span class="agent-title">Character Designer</span><span class="dot"></span></div>
-    <p class="agent-desc">Un prompt por cada personaje del guion, listo para GPT-4o.</p>
+    <p class="agent-desc">Un prompt por cada personaje, listo para GPT-4o.</p>
     <div class="sec-label">Output</div>
     <div class="out-box" id="out2">— esperando ejecución —</div>
     <button class="btn-copy" onclick="cpBox('out2')">Copiar</button>
   </div>
+
   <div class="connector">↓</div>
+
   <div class="card" id="card3">
-    <div class="agent-hdr"><span class="badge b3">Agente 03</span><span class="agent-title">NanoBanana</span><span class="dot"></span></div>
-    <p class="agent-desc">Un prompt de video por cada toma del guion.</p>
+    <div class="agent-hdr"><span class="badge b3">Agente 03</span><span class="agent-title" id="title3">NanoBanana</span><span class="dot"></span></div>
+    <p class="agent-desc" id="desc3">Un prompt de video por cada toma del guion.</p>
     <div class="sec-label">Output</div>
     <div class="out-box" id="out3">— esperando ejecución —</div>
-    <button class="btn-copy" onclick="cpBox('out3')">Copiar todos</button>
+    <button class="btn-copy" onclick="cpBox('out3')">Copiar</button>
   </div>
+
   <div class="connector">↓</div>
+
   <div class="card" id="card4">
     <div class="agent-hdr"><span class="badge b4">Agente 04</span><span class="agent-title">Meta Ads Copy</span><span class="dot"></span></div>
     <p class="agent-desc">Texto principal, titular, descripción y CTA para Meta Ads Manager.</p>
     <div class="sec-label">Output</div>
     <div id="out4meta"><div class="out-box">— esperando ejecución —</div></div>
   </div>
+
   <div class="run-row">
     <button class="btn-run" id="runBtn" onclick="run()">Generar anuncio</button>
     <button class="btn-reset" onclick="reset()">↺</button>
   </div>
   <div class="prog" id="prog"><div class="prog-fill" id="progFill"></div></div>
+
 </div>
 <div class="toast" id="toast"></div>
+
 <script>
-let fullScript='',chosenV=1;
+const ARQ_INFO = {
+  A: { label:'Cinemático emocional', badge:'ab-a', desc:'Video 25–40s. Clips cotidianos reales de niños. Sin voz en off. Texto en pantalla lo agregas tú en edición. Música suave o funk ligero. Hook en 3s sobre identidad del niño o decisión del padre. Features al final. Motor: orgullo e identidad del padre.' },
+  B: { label:'Estático conceptual', badge:'ab-b', desc:'Imagen estática. Fondo limpio (blanco, azul claro o crema). Headline bold que desafía una norma social (máx 8 palabras). Subfrase validadora. Features con iconos. Logo Kiper centrado abajo. Motor: inteligencia y postura intelectual del padre.' },
+  D: { label:'La voz del hijo ★', badge:'ab-d', desc:'Video 25–35s. Niños en cámara lenta mirando a cámara — expresión natural, no actuada. Sin adultos. Texto narrativo lo agregas tú en edición. Música instrumental suave. Hook en 3s sobre ausencia del padre con amor, no culpa. Producto como plano detalle al final. Mayor volumen de ventas en la historia de Kiper.' }
+};
+
+let fullScript='', chosenV=1, currentArq='';
+
+function onArq(){
+  const val=document.getElementById('arquetipo').value;
+  const desc=document.getElementById('arqDesc');
+  currentArq=val;
+  if(!val){desc.classList.remove('on');return;}
+  const a=ARQ_INFO[val];
+  desc.innerHTML=`<span class="arq-badge ${a.badge}">${val} · ${a.label}</span><br>${a.desc}`;
+  desc.classList.add('on');
+  const t3=document.getElementById('title3');
+  const d3=document.getElementById('desc3');
+  if(val==='B'){t3.textContent='Especificaciones del estático';d3.textContent='Composición, headline, colores y layout para el diseñador.';}
+  else{t3.textContent='NanoBanana';d3.textContent='Un prompt de video por cada toma del guion.';}
+}
+
 function g(id){const e=document.getElementById(id);return e?e.value.trim():'';}
-function brief(){const a=g('angulo');return `PRODUCTO: Kiper (smartwatch infantil — no es rastreo, es contacto)\nPLATAFORMA: ${g('plataforma')}\nFORMATO VISUAL: ${g('formato')}\nDURACIÓN: ${g('duracion')}\nARQUETIPO: ${g('arquetipo')}${a?'\nÁNGULO: '+a:''}`;}
+function brief(){
+  const a=g('angulo');
+  return `PLATAFORMA: ${g('plataforma')}\nDURACIÓN: ${g('duracion')}\nPERSONAJE: ${g('personaje')}${a?'\nÁNGULO: '+a:''}`;
+}
 function setCard(n,s){const e=document.getElementById('card'+n);if(e)e.className='card '+(s||'');}
-function setOut(id,text,loading=false){const b=document.getElementById(id);if(!b)return;if(loading){b.innerHTML='<div class="think"><span></span><span></span><span></span></div>';b.className='out-box';}else{b.textContent=text;b.className='out-box'+(text&&!text.startsWith('—')?' has':'');}}
+function setOut(id,text,loading=false){
+  const b=document.getElementById(id);if(!b)return;
+  if(loading){b.innerHTML='<div class="think"><span></span><span></span><span></span></div>';b.className='out-box';}
+  else{b.textContent=text;b.className='out-box'+(text&&!text.startsWith('—')?' has':'');}
+}
 function setProg(p){document.getElementById('progFill').style.width=p+'%';}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400);}
-async function api(agente,userContent){
-  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agente,messages:[{role:'user',content:userContent}]})});
+
+async function api(agente, userContent){
+  const body={agente, messages:[{role:'user',content:userContent}]};
+  if(agente===1||agente===3) body.arquetipo=currentArq;
+  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   let d;try{d=await r.json();}catch(e){throw new Error('Respuesta inválida');}
   if(!r.ok||d.error)throw new Error(d?.error?.message||'HTTP '+r.status);
   if(!Array.isArray(d.content))throw new Error('Formato inesperado');
@@ -138,26 +213,92 @@ async function api(agente,userContent){
   if(!tb)throw new Error('Sin bloque de texto');
   return tb.text;
 }
-function extractV(text,n){const re=new RegExp('VERSIÓN\\s*'+n+'[:\\s]','i');const rn=new RegExp('VERSIÓN\\s*'+(n+1)+'[:\\s]','i');const s=text.search(re);if(s===-1)return text;const e=n<3?text.search(rn):text.length;return text.slice(s,e<0?text.length:e).trim();}
-function selV(n){chosenV=n;[1,2,3].forEach(i=>document.getElementById('vb'+i).classList.toggle('sel',i===n));toast('Versión '+n+' seleccionada');}
-function renderMeta(text){const fields=[{key:'TEXTO PRINCIPAL',label:'Texto principal'},{key:'TITULAR',label:'Titular'},{key:'DESCRIPCIÓN',label:'Descripción'},{key:'CTA',label:'CTA'}];let html='<div class="meta-grid">';for(let i=0;i<fields.length;i++){const{key,label}=fields[i];const nk=i<fields.length-1?fields[i+1].key:null;const re=new RegExp(key+':\\s*([\\s\\S]*?)'+(nk?nk+':':'$'),'i');const m=text.match(re);const val=m?m[1].trim():'—';html+=`<div class="meta-blk"><div class="meta-blk-title">${label}</div><div class="meta-blk-val" id="mv${i}">${val}</div><button class="meta-copy" onclick="cpMeta(${i})">Copiar</button></div>`;}html+='</div>';document.getElementById('out4meta').innerHTML=html;}
-async function run(){
-  if(!g('formato')||!g('arquetipo')){toast('Completa formato y arquetipo');return;}
-  const btn=document.getElementById('runBtn');btn.disabled=true;btn.textContent='Generando...';
-  document.getElementById('prog').style.display='block';document.getElementById('vpick').classList.remove('on');setProg(0);
-  const b=brief();
-  try{setCard(1,'active');setOut('out1','',true);setProg(5);fullScript=await api(1,b);setCard(1,'done');setOut('out1',fullScript);setProg(30);document.getElementById('vpick').classList.add('on');toast('Guion listo — elige versión o continúa con la 1');}
-  catch(e){setCard(1,'error');setOut('out1','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
-  await new Promise(r=>setTimeout(r,800));const script=extractV(fullScript,chosenV);
-  try{setCard(2,'active');setOut('out2','',true);setProg(42);const o2=await api(2,'BRIEF:\n'+b+'\n\nGUION (Versión '+chosenV+'):\n'+script);setCard(2,'done');setOut('out2',o2);setProg(58);}
-  catch(e){setCard(2,'error');setOut('out2','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
-  try{setCard(3,'active');setOut('out3','',true);setProg(65);const o3=await api(3,'BRIEF:\n'+b+'\n\nGUION (Versión '+chosenV+'):\n'+script);setCard(3,'done');setOut('out3',o3);setProg(80);}
-  catch(e){setCard(3,'error');setOut('out3','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
-  try{setCard(4,'active');document.getElementById('out4meta').innerHTML='<div class="out-box"><div class="think"><span></span><span></span><span></span></div></div>';setProg(88);const o4=await api(4,'BRIEF:\n'+b+'\n\nGUION (Versión '+chosenV+'):\n'+script);setCard(4,'done');renderMeta(o4);setProg(100);}
-  catch(e){setCard(4,'error');document.getElementById('out4meta').innerHTML='<div class="out-box">⚠ '+e.message+'</div>';btn.disabled=false;btn.textContent='Generar anuncio';return;}
-  btn.disabled=false;btn.textContent='Generar anuncio';toast('Pipeline completo ✓');
+
+function extractV(text,n){
+  const re=new RegExp('VERSIÓN\\s*'+n+'[:\\s]','i');
+  const rn=new RegExp('VERSIÓN\\s*'+(n+1)+'[:\\s]','i');
+  const s=text.search(re);if(s===-1)return text;
+  const e=n<3?text.search(rn):text.length;
+  return text.slice(s,e<0?text.length:e).trim();
 }
-function reset(){[1,2,3,4].forEach(n=>setCard(n,''));setOut('out1','— esperando ejecución —');setOut('out2','— esperando ejecución —');setOut('out3','— esperando ejecución —');document.getElementById('out4meta').innerHTML='<div class="out-box">— esperando ejecución —</div>';document.getElementById('vpick').classList.remove('on');document.getElementById('prog').style.display='none';setProg(0);fullScript='';chosenV=1;[1,2,3].forEach(i=>document.getElementById('vb'+i).classList.toggle('sel',i===1));}
+
+function selV(n){chosenV=n;[1,2,3].forEach(i=>document.getElementById('vb'+i).classList.toggle('sel',i===n));toast('Versión '+n+' seleccionada');}
+
+function renderMeta(text){
+  const fields=[{key:'TEXTO PRINCIPAL',label:'Texto principal'},{key:'TITULAR',label:'Titular'},{key:'DESCRIPCIÓN',label:'Descripción'},{key:'CTA',label:'CTA'}];
+  let html='<div class="meta-grid">';
+  for(let i=0;i<fields.length;i++){
+    const{key,label}=fields[i];const nk=i<fields.length-1?fields[i+1].key:null;
+    const re=new RegExp(key+':\\s*([\\s\\S]*?)'+(nk?nk+':':'$'),'i');
+    const m=text.match(re);const val=m?m[1].trim():'—';
+    html+=`<div class="meta-blk"><div class="meta-blk-title">${label}</div><div class="meta-blk-val" id="mv${i}">${val}</div><button class="meta-copy" onclick="cpMeta(${i})">Copiar</button></div>`;
+  }
+  html+='</div>';document.getElementById('out4meta').innerHTML=html;
+}
+
+async function run(){
+  if(!currentArq){toast('Elige un arquetipo');return;}
+  if(!g('personaje')){toast('Completa el personaje');return;}
+  const btn=document.getElementById('runBtn');
+  btn.disabled=true;btn.textContent='Generando...';
+  document.getElementById('prog').style.display='block';
+  document.getElementById('vpick').classList.remove('on');
+  setProg(0);
+  const b=brief();
+
+  try{
+    setCard(1,'active');setOut('out1','',true);setProg(5);
+    fullScript=await api(1,b);
+    setCard(1,'done');setOut('out1',fullScript);setProg(28);
+    document.getElementById('vpick').classList.add('on');
+    toast('Guion listo — elige versión o continúa con la 1');
+  }catch(e){setCard(1,'error');setOut('out1','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
+
+  await new Promise(r=>setTimeout(r,600));
+  const script=extractV(fullScript,chosenV);
+
+  try{
+    setCard(2,'active');setOut('out2','',true);setProg(42);
+    const o2=await api(2,'BRIEF:\n'+b+'\n\nGUION (Versión '+chosenV+'):\n'+script);
+    setCard(2,'done');setOut('out2',o2);setProg(58);
+  }catch(e){setCard(2,'error');setOut('out2','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
+
+  try{
+    setCard(3,'active');setOut('out3','',true);setProg(65);
+    const o3=await api(3,'BRIEF:\n'+b+'\n\nGUION (Versión '+chosenV+'):\n'+script);
+    setCard(3,'done');setOut('out3',o3);setProg(80);
+  }catch(e){setCard(3,'error');setOut('out3','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
+
+  try{
+    setCard(4,'active');
+    document.getElementById('out4meta').innerHTML='<div class="out-box"><div class="think"><span></span><span></span><span></span></div></div>';
+    setProg(88);
+    const o4=await api(4,'BRIEF:\n'+b+'\nARQUETIPO: '+currentArq+' — '+ARQ_INFO[currentArq].label+'\n\nGUION (Versión '+chosenV+'):\n'+script);
+    setCard(4,'done');renderMeta(o4);setProg(100);
+  }catch(e){
+    setCard(4,'error');
+    document.getElementById('out4meta').innerHTML='<div class="out-box">⚠ '+e.message+'</div>';
+    btn.disabled=false;btn.textContent='Generar anuncio';return;
+  }
+
+  btn.disabled=false;btn.textContent='Generar anuncio';
+  toast('Pipeline completo ✓');
+}
+
+function reset(){
+  [1,2,3,4].forEach(n=>setCard(n,''));
+  setOut('out1','— esperando ejecución —');setOut('out2','— esperando ejecución —');setOut('out3','— esperando ejecución —');
+  document.getElementById('out4meta').innerHTML='<div class="out-box">— esperando ejecución —</div>';
+  document.getElementById('vpick').classList.remove('on');
+  document.getElementById('prog').style.display='none';
+  setProg(0);fullScript='';chosenV=1;currentArq='';
+  document.getElementById('arquetipo').value='';
+  document.getElementById('arqDesc').classList.remove('on');
+  document.getElementById('title3').textContent='NanoBanana';
+  document.getElementById('desc3').textContent='Un prompt de video por cada toma del guion.';
+  [1,2,3].forEach(i=>document.getElementById('vb'+i).classList.toggle('sel',i===1));
+}
+
 function cpBox(id){const t=document.getElementById(id)?.textContent;if(!t||t.startsWith('—'))return;navigator.clipboard.writeText(t).then(()=>toast('Copiado ✓'));}
 function cpMeta(i){const t=document.getElementById('mv'+i)?.textContent;if(t)navigator.clipboard.writeText(t).then(()=>toast('Copiado ✓'));}
 </script>
