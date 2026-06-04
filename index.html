@@ -198,6 +198,25 @@
     .angle-btn.active .angle-num { background: var(--teal); color: white; opacity: 1; }
     .angle-label { font-size: 13px; color: var(--dark); line-height: 1.3; font-weight: 500; }
 
+    /* PERSPECTIVA */
+    .persp-list { display: flex; flex-direction: column; gap: 6px; }
+    .persp-btn {
+      display: flex; flex-direction: column; gap: 1px;
+      padding: 9px 12px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: var(--white);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      width: 100%;
+      font-family: var(--font);
+    }
+    .persp-btn:hover { background: var(--peach-light); border-color: var(--peach); }
+    .persp-btn.active { background: var(--peach-light); border-color: var(--coral); }
+    .persp-name { font-size: 13px; font-weight: 700; color: var(--dark); }
+    .persp-sub { font-size: 11px; color: var(--dark); opacity: 0.55; }
+
     /* CONTROLS */
     .control-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .control-label { font-size: 13px; color: var(--dark); opacity: 0.8; font-weight: 500; }
@@ -399,6 +418,7 @@
     }
     .chip-stage { background: var(--teal); color: white; }
     .chip-count { background: var(--lavender-light); color: #7050B0; }
+    .chip-persp { background: var(--peach-light); color: #C07030; }
     .carousel-angle { font-size: 15px; font-weight: 700; color: var(--dark); letter-spacing: -0.2px; }
     .btn-export {
       padding: 9px 16px;
@@ -543,6 +563,12 @@
       <div class="stage-desc" id="stageDesc"></div>
     </div>
 
+    <!-- PERSPECTIVA -->
+    <div class="card">
+      <p class="card-title">Perspectiva</p>
+      <div class="persp-list" id="perspList"></div>
+    </div>
+
     <!-- ÁNGULOS -->
     <div class="card">
       <p class="card-title">Ángulo de venta</p>
@@ -585,6 +611,15 @@
 </div>
 
 <script>
+  /* ── PERSPECTIVAS ── */
+  const PERSPECTIVES = [
+    { id:'promo', name:'Promocional', sub:'La marca habla', prompt:`PERSPECTIVA: Promocional. La marca habla en su propia voz y presenta la idea del ángulo (y según la etapa, el producto/oferta). Tono de marca: cálido, seguro, directo. Le habla al papá de "tú". No es un cliente contando, es Kiper hablando.` },
+    { id:'testi', name:'Testimonial', sub:'Un papá real cuenta', prompt:`PERSPECTIVA: Testimonial. Un papá o mamá cliente cuenta su experiencia en PRIMERA PERSONA ("yo no quería...", "mi hijo...", "lo que me pasó..."). Estructura de historia: situación inicial (la tensión del ángulo) → qué decidió o probó → cómo cambió con Kiper → recomendación honesta. Voz de persona real, coloquial, nada publicitaria. IMPORTANTE: experiencias verosímiles y honestas; NO inventes resultados exagerados ni cifras. Es una plantilla para aterrizar con una reseña REAL del cliente.` },
+    { id:'edu', name:'Educativo / consejo', sub:'Enseña, no vende', prompt:`PERSPECTIVA: Educativo. Un papá con criterio o voz experta ENSEÑA algo de crianza ligado al ángulo ("lo que aprendí...", "lo que nadie te dice antes de..."). Aporta valor primero; Kiper aparece al final como conclusión natural, no como pitch. Sin venta dura.` },
+    { id:'comp', name:'Comparativa', sub:'Antes/después o vs smartphone', prompt:`PERSPECTIVA: Comparativa. Contrasta dos caminos (smartphone vs Kiper, o "antes vs ahora") de forma justa y concreta, sin atacar ni exagerar. Cierra inclinando hacia Kiper a través del ángulo. Resuelve la decisión del papá.` },
+    { id:'founder', name:'Historia de marca', sub:'Por qué creamos Kiper', prompt:`PERSPECTIVA: Historia de marca/fundador. La marca cuenta POR QUÉ existe Kiper, conectado al ángulo: la creencia o el problema que lo originó. Tono honesto, humano, de propósito. Construye confianza; no recita specs.` },
+  ];
+
   /* ── ETAPAS DEL FUNNEL ── */
   const STAGES = {
     TOFU: {
@@ -649,6 +684,7 @@ REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicio
 
   let selStage = null;
   let selAngle = null;
+  let selPersp = PERSPECTIVES[0];
   let slideCount = 3;
   let currentSlides = [];
   let currentUGC = null;
@@ -663,6 +699,20 @@ REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicio
   });
   document.getElementById('toggleKey').addEventListener('click', () => {
     apiInput.type = apiInput.type === 'password' ? 'text' : 'password';
+  });
+
+  /* ── PERSPECTIVA (render) ── */
+  const perspList = document.getElementById('perspList');
+  PERSPECTIVES.forEach((p, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'persp-btn' + (idx === 0 ? ' active' : '');
+    btn.innerHTML = `<span class="persp-name">${p.name}</span><span class="persp-sub">${p.sub}</span>`;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.persp-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selPersp = p;
+    });
+    perspList.appendChild(btn);
   });
 
   /* ── ETAPAS (render) ── */
@@ -732,6 +782,7 @@ REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicio
 
 ÁNGULO OBLIGATORIO — Ángulo ${selAngle.n}: "${selAngle.t}"
 ${selAngle.b}
+${selPersp.prompt}
 ${stage.prompt}
 
 A continuación está el ${bodyKind} YA ESCRITO para este ángulo y etapa:
@@ -857,6 +908,8 @@ OFERTA (solo si la etapa lo permite): antes $449.900, hoy $399.900. Plan $32.900
 
 ÁNGULO OBLIGATORIO — Ángulo ${selAngle.n}: "${selAngle.t}"
 ${selAngle.b}
+${selPersp.prompt}
+La PERSPECTIVA define QUIÉN habla y cómo; respétala por encima del tono de marca por defecto, y adapta los beats a ella (ej. en testimonial, los beats son los momentos de la historia del cliente).
 ${stage.prompt}
 
 Escribe el GUION de un video UGC vertical (9:16) de 30–45 segundos, grabado por un papá o mamá REAL con su celular. NO es un comercial pulido: es una persona real hablando a cámara, en primera persona, con español hablado colombiano cercano y natural (frases cortas, imperfectas, humanas). Que suene a persona, no a marca.
@@ -949,6 +1002,7 @@ Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
         <div class="carousel-meta">
           <div class="carousel-chips">
             <span class="chip chip-stage">${stage.name} · ${stage.tag}</span>
+            <span class="chip chip-persp">${selPersp.name}</span>
             <span class="chip chip-count">Guion UGC · ${data.duracion || beats.length + ' beats'}</span>
           </div>
           <span class="carousel-angle">Ángulo ${selAngle.n}: ${selAngle.t}</span>
@@ -991,7 +1045,7 @@ Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
 
   function exportUGC() {
     const stage = STAGES[selStage];
-    let text = `GUION UGC KIPER\nEtapa: ${stage.name} (${stage.tag})  ·  Ángulo ${selAngle.n}: ${selAngle.t}\nDuración: ${currentUGC.duracion || ''}\n${'─'.repeat(50)}\n\n`;
+    let text = `GUION UGC KIPER\nEtapa: ${stage.name} (${stage.tag})  ·  Perspectiva: ${selPersp.name}  ·  Ángulo ${selAngle.n}: ${selAngle.t}\nDuración: ${currentUGC.duracion || ''}\n${'─'.repeat(50)}\n\n`;
     currentUGC.beats.forEach((b, i) => {
       text += `${i+1}. ${b.fase || 'Beat'} (${b.tiempo || ''})\n`;
       text += `   Habla: ${b.habla || ''}\n`;
@@ -1034,6 +1088,9 @@ OFERTA (úsala solo cuando la etapa lo permita): antes $449.900, hoy $399.900 CO
 ÁNGULO OBLIGATORIO — Ángulo ${selAngle.n}: "${selAngle.t}"
 ${selAngle.b}
 REGLA DE ÁNGULO: todo el carrusel (hook, slides y CTA) debe nacer del INSIGHT y NÚCLEO de este ángulo, no de la tensión genérica de marca. Antes de cada slide pregúntate: "¿esto solo tiene sentido para este ángulo, o serviría para cualquiera?". Si serviría para cualquiera, reescríbelo para que sea específico de este.
+
+${selPersp.prompt}
+La PERSPECTIVA define QUIÉN habla y cómo; respétala por encima del tono de marca por defecto.
 
 ${stage.prompt}
 
@@ -1128,6 +1185,7 @@ Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
         <div class="carousel-meta">
           <div class="carousel-chips">
             <span class="chip chip-stage">${stage.name} · ${stage.tag}</span>
+            <span class="chip chip-persp">${selPersp.name}</span>
             <span class="chip chip-count">${slides.length} slides</span>
           </div>
           <span class="carousel-angle">Ángulo ${selAngle.n}: ${selAngle.t}</span>
@@ -1209,7 +1267,7 @@ Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
 
   function exportAll() {
     const stage = STAGES[selStage];
-    let text = `CARRUSEL KIPER\nEtapa: ${stage.name} (${stage.tag})  ·  Ángulo ${selAngle.n}: ${selAngle.t}\n${'─'.repeat(50)}\n\n`;
+    let text = `CARRUSEL KIPER\nEtapa: ${stage.name} (${stage.tag})  ·  Perspectiva: ${selPersp.name}  ·  Ángulo ${selAngle.n}: ${selAngle.t}\n${'─'.repeat(50)}\n\n`;
     currentSlides.forEach((s, i) => {
       text += `SLIDE ${i+1} (${s.tipo.toUpperCase()})\n`;
       if (s.tipo === 'hook')
