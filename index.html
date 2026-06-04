@@ -251,6 +251,64 @@
     .btn-hooks:hover:not(:disabled) { background: var(--teal); color: white; }
     .btn-hooks:disabled { border-color: var(--border); color: var(--dark); opacity: 0.4; cursor: not-allowed; }
 
+    .btn-ugc {
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px;
+      background: var(--blush-light);
+      color: var(--coral);
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-ugc:hover:not(:disabled) { background: var(--coral); color: white; }
+    .btn-ugc:disabled { background: var(--sand); color: var(--dark); opacity: 0.4; cursor: not-allowed; }
+
+    /* UGC BEAT CARDS */
+    .ugc-beat {
+      background: var(--white);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: fadeUp 0.5s ease both;
+    }
+    .ugc-beat-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 18px;
+      background: var(--sand);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .ugc-phase {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--teal-dark);
+    }
+    .ugc-phase .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+    .ugc-right { display: flex; align-items: center; gap: 8px; }
+    .ugc-time {
+      font-size: 11px; font-weight: 700; font-family: monospace;
+      color: var(--teal-dark);
+      background: var(--mint-light);
+      padding: 3px 9px; border-radius: var(--radius-pill);
+    }
+    .ugc-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 13px; }
+    .ugc-field-name {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--dark); opacity: 0.4; margin-bottom: 5px; display: block;
+    }
+    .ugc-habla { font-size: 15px; font-weight: 600; color: var(--dark); line-height: 1.45; }
+    .ugc-visual { font-size: 13px; color: var(--dark); opacity: 0.75; font-style: italic; line-height: 1.5; }
+    .ugc-overlay {
+      display: inline-block; font-size: 12px; font-weight: 800;
+      background: var(--dark); color: white;
+      padding: 5px 11px; border-radius: 8px; letter-spacing: 0.01em;
+    }
+
     /* HOOK CARDS */
     .hook-card {
       background: var(--white);
@@ -279,6 +337,14 @@
     .type-tension { background: var(--blush-light); color: #C05070; }
     .type-curiosidad { background: var(--mint-light); color: var(--teal-dark); }
     .type-reframe { background: var(--peach-light); color: #C07030; }
+
+    .alt-hooks-label {
+      margin-top: 8px;
+      font-size: 12px; font-weight: 800; letter-spacing: 0.01em;
+      color: var(--teal-dark);
+      background: var(--mint-light);
+      padding: 13px 18px; border-radius: var(--radius);
+    }
 
     /* ── MAIN OUTPUT ── */
     .main { display: flex; flex-direction: column; gap: 14px; }
@@ -498,7 +564,7 @@
         <span id="genIcon">✦</span>
         <span id="genText">Completa los campos</span>
       </button>
-      <button class="btn-hooks" id="hooksBtn" disabled>⚡ Generar 5 hooks para testear</button>
+      <button class="btn-ugc" id="ugcBtn" disabled>🎬 Generar guion UGC</button>
     </div>
 
   </aside>
@@ -585,6 +651,7 @@ REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicio
   let selAngle = null;
   let slideCount = 3;
   let currentSlides = [];
+  let currentUGC = null;
 
   /* ── API KEY ── */
   const apiInput = document.getElementById('apiKey');
@@ -644,10 +711,10 @@ REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicio
   function updateGenBtn() {
     const btn = document.getElementById('genBtn');
     const txt = document.getElementById('genText');
-    const hooksBtn = document.getElementById('hooksBtn');
+    const ugcBtn = document.getElementById('ugcBtn');
     const key = apiInput.value.trim();
     const ready = key && selStage && selAngle;
-    hooksBtn.disabled = !ready;
+    ugcBtn.disabled = !ready;
     if (!key) { txt.textContent = 'Falta la API key'; btn.disabled = true; return; }
     if (!selStage) { txt.textContent = 'Elige una etapa'; btn.disabled = true; return; }
     if (!selAngle) { txt.textContent = 'Elige un ángulo'; btn.disabled = true; return; }
@@ -657,46 +724,175 @@ REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicio
 
   /* ── GENERATE ── */
   document.getElementById('genBtn').addEventListener('click', generate);
-  document.getElementById('hooksBtn').addEventListener('click', generateHooks);
+  document.getElementById('ugcBtn').addEventListener('click', generateUGC);
 
-  async function generateHooks() {
-    const key = apiInput.value.trim();
-    if (!key || !selStage || !selAngle) return;
-
-    const btn = document.getElementById('hooksBtn');
-    const out = document.getElementById('output');
+  async function generateAltHooks(key, bodyText, bodyKind) {
     const stage = STAGES[selStage];
-
-    btn.disabled = true;
-    btn.textContent = 'Generando hooks...';
-    out.innerHTML = `<div class="loading-state"><div class="spinner"></div><p class="loading-text">Escribiendo 5 hooks para testear...</p></div>`;
-
-    const hooksPrompt = `Eres copywriter senior de performance para Meta Ads de Kiper, reloj inteligente para niños 6–12 años en Colombia. La marca le habla al papá con criterio, no con miedo: cálido, seguro, inteligente, nunca alarmista ni culposo.
-
-TENSIÓN CENTRAL DEL PAPÁ (contexto de marca, NO el tema del hook): "quiero saber de mi hijo, pero no quiero darle un celular".
+    const prompt = `Eres copywriter senior de performance para Meta Ads de Kiper, reloj inteligente para niños 6–12 años en Colombia. Voz: le habla al papá con criterio, no con miedo; cálido, seguro, inteligente, nunca alarmista ni culposo.
 
 ÁNGULO OBLIGATORIO — Ángulo ${selAngle.n}: "${selAngle.t}"
 ${selAngle.b}
 ${stage.prompt}
 
-Genera 5 HOOKS distintos para este ángulo y etapa, pensados para TESTEAR cuál frena el scroll.
+A continuación está el ${bodyKind} YA ESCRITO para este ángulo y etapa:
+<<<INICIO>>>
+${bodyText}
+<<<FIN>>>
 
-REGLA #1 (la más importante): los 5 hooks deben girar sobre el EJE específico de este ángulo (ver definición arriba), NO sobre la tensión genérica de marca ni sobre el producto.
-- Antes de escribir, identifica el EJE del ángulo y haz que los 5 hooks orbiten ESE punto. Mínimo 4 de los 5 deben contener la idea central del ángulo.
-- TEST OBLIGATORIO por hook: "¿esto serviría igual para otro ángulo de Kiper?". Si sí, recházalo y reescríbelo hasta que solo tenga sentido para el Ángulo ${selAngle.n}.
-- PROHIBIDO en el hook (aunque la etapa permita hablar de funciones): describir el producto o sus specs ("un reloj que hace llamadas", "tiene GPS"). Eso va en los slides de contenido, NUNCA en el hook. El hook vende la idea del ángulo, no la ficha técnica.
-- El EJEMPLO del ángulo marca el tono y la dirección correctos; NO lo copies, genera 5 nuevos en esa misma línea.
+Escribe 5 HOOKS ALTERNATIVOS para abrir ESTE MISMO ${bodyKind}, pensados para TESTEAR cuál frena mejor el scroll.
+
+REGLA #1 — CONTINUIDAD (la más importante): cada uno de los 5 hooks debe abrir un loop que el cuerpo de arriba RESUELVE. Después de cualquiera de los 5, el segundo momento del ${bodyKind} (slide 2 / beat 2) debe seguir teniendo sentido y pagar lo que el hook promete. No prometas nada que el cuerpo no cumpla.
+REGLA #2 — ÁNGULO: los 5 giran sobre el EJE de este ángulo (ver definición), no sobre la tensión genérica de marca. Mínimo 4 deben contener su idea central.
+- TEST por hook: "¿serviría igual para otro ángulo?". Si sí, reescríbelo hasta que solo sirva para el Ángulo ${selAngle.n}.
+- PROHIBIDO describir el producto o sus specs en el hook.
 
 REGLAS DEL HOOK:
 - Máx 8 palabras. Una sola idea. Su único trabajo es detener el scroll.
-- Cada hook debe ser de UNO de estos tres tipos, y debes incluir variedad entre los tres:
-  · "tension": nombra la tensión específica que abre este ángulo.
-  · "curiosidad": abre un loop (pregunta, dato o frase incompleta) que obligue a deslizar.
-  · "reframe": idea contraintuitiva propia del ángulo.
-- Escritura en oración, habla de tú. Sin frases motivacionales vagas ni slogans que sirvan para cualquier marca. Sin "peligro/riesgo/adicción/amenaza".
+- Incluye variedad entre los tres tipos: "tension", "curiosidad", "reframe".
+- Escritura en oración, habla de tú. Sin slogans genéricos. Sin "peligro/riesgo/adicción/amenaza".
 
 Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
 { "hooks": [ { "texto": "el hook", "tipo": "tension|curiosidad|reframe" } ] }`;
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 800,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    if (!resp.ok) { const e = await resp.text(); throw new Error(`HTTP ${resp.status}: ${e.slice(0, 400)}`); }
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    const raw = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No se encontró JSON en los hooks.');
+    const parsed = JSON.parse(match[0]);
+    if (!parsed.hooks || !Array.isArray(parsed.hooks)) throw new Error('Estructura inesperada en los hooks.');
+    return parsed.hooks;
+  }
+
+  function slidesToText(slides) {
+    return slides.map((s, i) => {
+      if (s.tipo === 'hook') return `Slide ${i+1} (Hook): ${s.mensaje || ''}`;
+      if (s.tipo === 'cta') return `Slide ${i+1} (CTA): ${s.mensaje || ''} [Botón: ${s.boton || ''}]`;
+      return `Slide ${i+1}: ${s.titulo ? s.titulo + ' — ' : ''}${s.mensaje || ''}`;
+    }).join('\n');
+  }
+
+  function beatsToText(beats) {
+    return beats.map((b, i) => `${i+1}. ${b.fase || 'Beat'} (${b.tiempo || ''}): "${b.habla || ''}" | Visual: ${b.visual || ''}`).join('\n');
+  }
+
+  function appendHooksLoading() {
+    document.getElementById('output').insertAdjacentHTML('beforeend',
+      `<div id="hooksLoading" class="loading-state" style="padding:32px 40px"><div class="spinner"></div><p class="loading-text">Escribiendo 5 hooks que continúan esto...</p></div>`);
+  }
+
+  async function appendAltHooks(key, bodyText, bodyKind) {
+    try {
+      appendHooksLoading();
+      const hooks = await generateAltHooks(key, bodyText, bodyKind);
+      const hl = document.getElementById('hooksLoading');
+      if (hl) hl.remove();
+      appendHooksSection(hooks, bodyKind);
+    } catch (e) {
+      const hl = document.getElementById('hooksLoading');
+      if (hl) hl.outerHTML = `<div class="error-card"><div class="error-title">No se pudieron generar los hooks</div><div class="error-body">${e.message}</div></div>`;
+    }
+  }
+
+  function appendHooksSection(hooks, bodyKind) {
+    const out = document.getElementById('output');
+    const typeLabel = { tension: 'Tensión', curiosidad: 'Curiosidad', reframe: 'Reframe' };
+    let html = `<div class="alt-hooks-label">⚡ 5 hooks alternativos para testear · continúan este ${bodyKind}</div>`;
+    hooks.forEach((h, i) => {
+      const t = (h.tipo || 'curiosidad').toLowerCase();
+      const cls = ['tension','curiosidad','reframe'].includes(t) ? t : 'curiosidad';
+      html += `
+        <div class="hook-card" style="animation-delay:${i * 0.06}s">
+          <div class="hook-index">${i+1}</div>
+          <div class="hook-main">
+            <div class="hook-text">${h.texto || ''}</div>
+            <span class="hook-type type-${cls}">${typeLabel[cls]}</span>
+          </div>
+          <button class="btn-copy" onclick="copyText('${(h.texto||'').replace(/'/g,"\\'")}', this)">Copiar</button>
+        </div>`;
+    });
+    out.insertAdjacentHTML('beforeend', html);
+  }
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    btn.textContent = '✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1800);
+  }
+
+  /* ── GUION UGC ── */
+  async function generateUGC() {
+    const key = apiInput.value.trim();
+    if (!key || !selStage || !selAngle) return;
+
+    const btn = document.getElementById('ugcBtn');
+    const out = document.getElementById('output');
+    const stage = STAGES[selStage];
+
+    btn.disabled = true;
+    btn.textContent = 'Generando guion...';
+    out.innerHTML = `<div class="loading-state"><div class="spinner"></div><p class="loading-text">Escribiendo el guion UGC...</p></div>`;
+
+    const ugcPrompt = `Eres guionista senior de UGC (user-generated content) para Meta Ads de Kiper, reloj inteligente para niños 6–12 años en Colombia.
+
+VOZ DE MARCA: le habla al papá con criterio, no con miedo. Cálido, seguro, inteligente. Nunca alarmista ni culposo. Kiper es la alternativa al smartphone para conexión real, no vigilancia.
+PRODUCTO: llamadas solo a contactos aprobados, mensajes de voz, GPS en tiempo real, foto remota, control parental por WhatsApp. Sin redes, sin apps, sin navegador.
+OFERTA (solo si la etapa lo permite): antes $449.900, hoy $399.900. Plan $32.900/mes ilimitado, sin permanencia, primer mes gratis. Envío gratis y pago contraentrega.
+
+ÁNGULO OBLIGATORIO — Ángulo ${selAngle.n}: "${selAngle.t}"
+${selAngle.b}
+${stage.prompt}
+
+Escribe el GUION de un video UGC vertical (9:16) de 30–45 segundos, grabado por un papá o mamá REAL con su celular. NO es un comercial pulido: es una persona real hablando a cámara, en primera persona, con español hablado colombiano cercano y natural (frases cortas, imperfectas, humanas). Que suene a persona, no a marca.
+
+ESTRUCTURA POR BEATS (cada beat = un momento del video, en orden):
+1. HOOK (0–3s): la línea hablada más importante; debe parar el scroll y nacer del EJE del ángulo. Máx ~10 palabras habladas, una sola idea. PROHIBIDO describir el producto o sus specs en el hook.
+2. PROBLEMA / IDENTIFICACIÓN: nombra la tensión del ángulo para que el papá piense "ese soy yo".
+3. GIRO / DESCUBRIMIENTO: el momento en que aparece Kiper, contado como experiencia personal ("entonces encontré...", "lo que hice fue...").
+4. Beats según la ETAPA:
+   - TOFU: cierra con la idea del ángulo y un CTA suave de descubrimiento. Sin precio, sin demo dura.
+   - MOFU: muestra 1–2 funciones en uso real (demo concreta) y resuelve una objeción ("¿de verdad lo usa?"). CTA de consideración.
+   - BOFU: incluye prueba social real del banco (4.9/5, +3.000 familias) y la oferta (precio con ancla, envío gratis, contraentrega, garantía 30 días). CTA duro.
+5. CTA final acorde a la etapa.
+Usa 4 beats para TOFU, 5 para MOFU, 5–6 para BOFU.
+
+Para CADA beat entrega:
+- "fase": nombre del beat (Hook, Problema, Giro, Demo, Prueba, Oferta, CTA...).
+- "tiempo": rango aproximado en segundos (ej. "0–3s").
+- "habla": lo que dice la persona a cámara, primera persona, hablado y natural (1–2 frases cortas).
+- "visual": qué se ve / B-roll. Sujeto cálido y real (papá o mamá a cámara, niño con el reloj, pantalla de WhatsApp con ubicación, el reloj en la muñeca...). Varía el plano entre beats. Nada de render 3D ni estética de IA.
+- "texto_pantalla": overlay corto para ver sin sonido (máx 6 palabras). Usa "" si no aplica.
+
+REGLAS:
+- Todo el guion gira sobre el EJE del ángulo, no sobre la tensión genérica de marca.
+- Sin "peligro", "riesgo", "adicción", "amenaza". Tono cálido y positivo.
+- En BOFU usa SOLO datos reales del banco; no inventes cifras, garantías ni medios de pago.
+
+Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
+{
+  "angulo": "${selAngle.t}",
+  "etapa": "${stage.name}",
+  "duracion": "ej. 35s",
+  "beats": [
+    { "fase": "Hook", "tiempo": "0–3s", "habla": "...", "visual": "...", "texto_pantalla": "..." }
+  ]
+}`;
 
     try {
       const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -709,8 +905,8 @@ Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 800,
-          messages: [{ role: 'user', content: hooksPrompt }]
+          max_tokens: 2000,
+          messages: [{ role: 'user', content: ugcPrompt }]
         })
       });
 
@@ -727,57 +923,86 @@ Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
       if (!match) throw new Error('No se encontró JSON en la respuesta.\n\nRespuesta: ' + raw.slice(0, 300));
 
       const parsed = JSON.parse(match[0]);
-      if (!parsed.hooks || !Array.isArray(parsed.hooks)) throw new Error('Estructura inesperada en el JSON.');
+      if (!parsed.beats || !Array.isArray(parsed.beats)) throw new Error('Estructura inesperada en el JSON.');
 
-      renderHooks(parsed.hooks);
+      currentUGC = parsed;
+      renderUGC(parsed);
+      await appendAltHooks(key, beatsToText(parsed.beats), 'guion');
 
     } catch (err) {
       out.innerHTML = `<div class="error-card">
-        <div class="error-title">Error al generar hooks</div>
+        <div class="error-title">Error al generar el guion</div>
         <div class="error-body">${err.message}</div>
       </div>`;
     }
 
     btn.disabled = false;
-    btn.textContent = '⚡ Generar 5 hooks para testear';
+    btn.textContent = '🎬 Generar guion UGC';
   }
 
-  function renderHooks(hooks) {
+  function renderUGC(data) {
     const out = document.getElementById('output');
     const stage = STAGES[selStage];
-    const typeLabel = { tension: 'Tensión', curiosidad: 'Curiosidad', reframe: 'Reframe' };
+    const beats = data.beats || [];
     let html = `
       <div class="carousel-header">
         <div class="carousel-meta">
           <div class="carousel-chips">
             <span class="chip chip-stage">${stage.name} · ${stage.tag}</span>
-            <span class="chip chip-count">${hooks.length} hooks</span>
+            <span class="chip chip-count">Guion UGC · ${data.duracion || beats.length + ' beats'}</span>
           </div>
-          <span class="carousel-angle">Hooks para testear · Ángulo ${selAngle.n}: ${selAngle.t}</span>
+          <span class="carousel-angle">Ángulo ${selAngle.n}: ${selAngle.t}</span>
         </div>
+        <button class="btn-export" onclick="exportUGC()">⬇ Exportar guion</button>
       </div>`;
 
-    hooks.forEach((h, i) => {
-      const t = (h.tipo || 'curiosidad').toLowerCase();
-      const cls = ['tension','curiosidad','reframe'].includes(t) ? t : 'curiosidad';
+    beats.forEach((b, i) => {
+      const overlay = b.texto_pantalla && b.texto_pantalla.trim()
+        ? `<div><span class="ugc-field-name">Texto en pantalla</span><span class="ugc-overlay">${b.texto_pantalla}</span></div>` : '';
       html += `
-        <div class="hook-card" style="animation-delay:${i * 0.06}s">
-          <div class="hook-index">${i+1}</div>
-          <div class="hook-main">
-            <div class="hook-text">${h.texto || ''}</div>
-            <span class="hook-type type-${cls}">${typeLabel[cls]}</span>
+        <div class="ugc-beat" style="animation-delay:${i * 0.06}s">
+          <div class="ugc-beat-top">
+            <span class="ugc-phase"><span class="pill-dot"></span>${b.fase || 'Beat ' + (i+1)}</span>
+            <div class="ugc-right">
+              <span class="ugc-time">${b.tiempo || ''}</span>
+              <button class="btn-copy" id="ucopy-${i}" onclick="copyUGCBeat(${i})">Copiar</button>
+            </div>
           </div>
-          <button class="btn-copy" onclick="copyText('${(h.texto||'').replace(/'/g,"\\'")}', this)">Copiar</button>
+          <div class="ugc-body">
+            <div><span class="ugc-field-name">🎙 Habla a cámara</span><div class="ugc-habla">${b.habla || ''}</div></div>
+            <div><span class="ugc-field-name">🎬 Visual</span><div class="ugc-visual">${b.visual || ''}</div></div>
+            ${overlay}
+          </div>
         </div>`;
     });
     out.innerHTML = html;
   }
 
-  function copyText(text, btn) {
+  function copyUGCBeat(i) {
+    const b = currentUGC.beats[i];
+    let text = `${b.fase || 'Beat'} (${b.tiempo || ''})\nHabla: ${b.habla || ''}\nVisual: ${b.visual || ''}`;
+    if (b.texto_pantalla && b.texto_pantalla.trim()) text += `\nTexto en pantalla: ${b.texto_pantalla}`;
     navigator.clipboard.writeText(text).catch(() => {});
-    btn.textContent = '✓';
+    const btn = document.getElementById(`ucopy-${i}`);
+    btn.textContent = '✓ Copiado';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1800);
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  }
+
+  function exportUGC() {
+    const stage = STAGES[selStage];
+    let text = `GUION UGC KIPER\nEtapa: ${stage.name} (${stage.tag})  ·  Ángulo ${selAngle.n}: ${selAngle.t}\nDuración: ${currentUGC.duracion || ''}\n${'─'.repeat(50)}\n\n`;
+    currentUGC.beats.forEach((b, i) => {
+      text += `${i+1}. ${b.fase || 'Beat'} (${b.tiempo || ''})\n`;
+      text += `   Habla: ${b.habla || ''}\n`;
+      text += `   Visual: ${b.visual || ''}\n`;
+      if (b.texto_pantalla && b.texto_pantalla.trim()) text += `   Texto en pantalla: ${b.texto_pantalla}\n`;
+      text += `\n`;
+    });
+    navigator.clipboard.writeText(text).catch(() => {});
+    const btn = document.querySelector('.btn-export');
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => { btn.textContent = '⬇ Exportar guion'; }, 2500);
   }
 
   async function generate() {
@@ -881,6 +1106,7 @@ Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
 
       currentSlides = parsed.slides;
       renderCarousel(parsed.slides);
+      await appendAltHooks(key, slidesToText(parsed.slides), 'carrusel');
 
     } catch (err) {
       out.innerHTML = `<div class="error-card">
