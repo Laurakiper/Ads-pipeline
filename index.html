@@ -1,306 +1,811 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kiper · Ad Pipeline</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#F0EDE6;min-height:100vh;padding:20px 16px 60px}
-.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-.hdr{padding:16px 0 8px;position:relative;overflow:hidden}
-.hdr-deco{position:absolute;top:-10px;right:-10px;width:70px;height:70px;border-radius:50%;background:#C9B8E8;opacity:.5}
-.hdr-deco2{position:absolute;bottom:-15px;right:20px;width:45px;height:45px;border-radius:50%;background:#F2C4CE;opacity:.5}
-.hdr h1{font-size:28px;font-weight:800;color:#3ABFAA;line-height:1.2;position:relative}
-.hdr p{font-size:13px;color:#2D2B38;opacity:.6;margin-top:6px;line-height:1.7;position:relative}
-.card{background:#fff;border:1px solid #EDE8E0;border-radius:18px;padding:16px;position:relative;overflow:hidden}
-.card.active{border:1.5px solid #3ABFAA}.card.done{border:1.5px solid #A8D8C8}.card.error{border:1.5px solid #E8826A}
-.brief-card{background:#fff;border:1px dashed #D8C8B0;border-radius:18px;padding:16px;position:relative;overflow:hidden}
-.brief-deco{position:absolute;bottom:-12px;right:-12px;width:55px;height:55px;border-radius:50%;background:#A8D8C8;opacity:.4}
-.sec-label{font-size:11px;font-weight:500;color:#2D2B38;opacity:.5;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
-.field{margin-bottom:10px}.field:last-child{margin-bottom:0}
-.field label{font-size:12px;font-weight:500;color:#2D2B38;display:block;margin-bottom:5px;opacity:.7}
-select,input,textarea{width:100%;font-size:13px;font-family:'Plus Jakarta Sans',Arial,sans-serif;border-radius:100px;border:1px solid #D8C8B0;background:#F0EDE6;color:#2D2B38;padding:8px 14px;outline:none;transition:border-color .2s}
-textarea{border-radius:14px;resize:vertical;min-height:52px;line-height:1.5}
-select:focus,input:focus,textarea:focus{border-color:#3ABFAA}
-select option:disabled{color:#aaa}
-.arq-desc{margin-top:8px;padding:10px 12px;background:#F0EDE6;border:1px dashed #D8C8B0;border-radius:12px;font-size:11px;line-height:1.6;color:#2D2B38;display:none}
-.arq-desc.on{display:block}
-.arq-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-bottom:6px}
-.ab-a{background:#DFF2EB;color:#1A8070}.ab-b{background:#EDE8F7;color:#7050B0}.ab-d{background:#FAE8EC;color:#C05070}
-.agent-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;flex-shrink:0}
-.b1{background:#DFF2EB;color:#1A8070}.b2{background:#FAE8EC;color:#C05070}.b3{background:#DFF2EB;color:#1A8070}.b4{background:#FDE9D4;color:#C07030}
-.agent-title{font-size:14px;font-weight:700;color:#2D2B38;flex:1}
-.dot{width:7px;height:7px;border-radius:50%;background:#D8C8B0;flex-shrink:0;transition:background .3s}
-.active .dot{background:#3ABFAA;animation:pulse 1.2s infinite}.done .dot{background:#A8D8C8}.error .dot{background:#E8826A}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.agent-desc{font-size:12px;color:#2D2B38;opacity:.6;margin-bottom:12px;line-height:1.7}
-.out-box{background:#F0EDE6;border:1px dashed #D8C8B0;border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.7;color:#2D2B38;opacity:.5;min-height:52px;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow-y:auto;font-family:'Plus Jakarta Sans',Arial,sans-serif}
-.out-box.has{opacity:1}
-.btn-copy{margin-top:8px;font-size:11px;font-weight:700;padding:4px 14px;border-radius:100px;border:1.5px solid #3ABFAA;background:transparent;color:#3ABFAA;cursor:pointer;font-family:'Plus Jakarta Sans',Arial,sans-serif;transition:all .15s}
-.btn-copy:hover{background:#3ABFAA;color:#fff}
-.vpick{display:none;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.vpick.on{display:flex}
-.vlabel{font-size:11px;font-weight:500;color:#2D2B38;opacity:.5;text-transform:uppercase;letter-spacing:.06em}
-.vbtn{font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;border:1.5px solid #D8C8B0;background:transparent;color:#2D2B38;cursor:pointer;font-family:'Plus Jakarta Sans',Arial,sans-serif;transition:all .15s}
-.vbtn.sel,.vbtn:hover{border-color:#3ABFAA;color:#1A8070;background:#DFF2EB}
-.connector{text-align:center;color:#3ABFAA;font-size:16px;padding:0}
-.run-row{display:flex;gap:8px}
-.btn-run{flex:1;padding:12px 20px;background:#3ABFAA;border:none;border-radius:100px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',Arial,sans-serif;transition:all .15s}
-.btn-run:hover{background:#2D9E8E}.btn-run:disabled{opacity:.4;cursor:not-allowed}
-.btn-reset{padding:12px 16px;background:transparent;border:1.5px solid #D8C8B0;border-radius:100px;color:#2D2B38;opacity:.6;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',Arial,sans-serif;transition:all .15s}
-.btn-reset:hover{border-color:#E8826A;color:#E8826A;opacity:1}
-.prog{height:4px;background:#D8C8B0;border-radius:100px;overflow:hidden;margin-top:8px;display:none}
-.prog-fill{height:100%;background:#3ABFAA;transition:width .5s ease;width:0%}
-.think{display:inline-flex;gap:4px;align-items:center}
-.think span{width:6px;height:6px;border-radius:50%;animation:boing .8s infinite}
-.think span:nth-child(1){background:#3ABFAA}.think span:nth-child(2){animation-delay:.15s;background:#F2C4CE}.think span:nth-child(3){animation-delay:.3s;background:#C9B8E8}
-@keyframes boing{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
-.meta-grid{display:flex;flex-direction:column;gap:8px}
-.meta-blk{background:#F0EDE6;border:1px dashed #D8C8B0;border-radius:14px;padding:10px 12px}
-.meta-blk-title{font-size:10px;font-weight:700;color:#C07030;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
-.meta-blk-val{font-size:12px;color:#2D2B38;line-height:1.7;white-space:pre-wrap;word-break:break-word}
-.meta-copy{margin-top:7px;font-size:11px;font-weight:700;padding:3px 12px;border-radius:100px;border:1.5px solid #F5C49A;background:transparent;color:#C07030;cursor:pointer;font-family:'Plus Jakarta Sans',Arial,sans-serif;transition:all .15s}
-.meta-copy:hover{background:#FDE9D4}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:#fff;border:1.5px solid #3ABFAA;color:#1A8070;font-size:12px;font-weight:600;padding:7px 18px;border-radius:100px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;z-index:999;font-family:'Plus Jakarta Sans',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kiper · Generador de Carruseles de Pauta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #3ABFAA;
+      --teal-dark: #1A8070;
+      --sand: #F0EDE6;
+      --blush: #F2C4CE;
+      --lavender: #C9B8E8;
+      --mint: #A8D8C8;
+      --peach: #F5C49A;
+      --sky: #A3CDED;
+      --coral: #E8826A;
+      --dark: #2D2B38;
+      --blush-light: #FAE8EC;
+      --lavender-light: #EDE8F7;
+      --mint-light: #DFF2EB;
+      --peach-light: #FDE9D4;
+      --border: #D8C8B0;
+      --border-soft: #EDE8E0;
+      --white: #ffffff;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --font: 'Plus Jakarta Sans', Arial, sans-serif;
+      --radius: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 100px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--sand);
+      color: var(--dark);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: rgba(240, 237, 230, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-soft);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 60px;
+    }
+    .logo-mark {
+      width: 34px; height: 34px;
+      background: var(--teal);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 17px; color: white;
+    }
+    .logo-text { font-size: 16px; font-weight: 800; color: var(--teal); letter-spacing: -0.3px; }
+    .logo-text span { color: var(--dark); font-weight: 500; }
+    .logo-sub {
+      font-size: 11px; color: var(--dark); opacity: 0.4;
+      margin-left: auto; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 36px 24px;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar { position: sticky; top: 92px; display: flex; flex-direction: column; gap: 16px; }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dark);
+      opacity: 0.4;
+      margin-bottom: 14px;
+    }
+
+    /* API KEY */
+    .api-row { display: flex; gap: 8px; }
+    .api-input {
+      flex: 1;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: var(--sand);
+      color: var(--dark);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .api-input:focus { border-color: var(--teal); }
+    .api-input::placeholder { color: var(--dark); opacity: 0.35; }
+    .btn-icon {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: var(--sand);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-icon:hover { background: var(--mint-light); border-color: var(--teal); }
+    .api-note { margin-top: 8px; font-size: 11px; color: var(--dark); opacity: 0.5; line-height: 1.5; }
+    .api-note a { color: var(--teal-dark); text-decoration: none; font-weight: 600; }
+    .api-note a:hover { text-decoration: underline; }
+
+    /* ── SEGMENTED (ETAPA) ── */
+    .segmented { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .seg-btn {
+      border: 1px solid var(--border-soft);
+      background: var(--sand);
+      border-radius: var(--radius);
+      padding: 12px 6px 11px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      font-family: var(--font);
+    }
+    .seg-btn:hover { border-color: var(--teal); }
+    .seg-btn .seg-name { font-size: 13px; font-weight: 800; color: var(--dark); letter-spacing: -0.2px; }
+    .seg-btn .seg-tag { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.5; margin-top: 2px; }
+    .seg-btn.active { background: var(--teal); border-color: var(--teal); }
+    .seg-btn.active .seg-name, .seg-btn.active .seg-tag { color: white; opacity: 1; }
+    .stage-desc {
+      margin-top: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--dark);
+      opacity: 0.7;
+      background: var(--mint-light);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      min-height: 0;
+      display: none;
+    }
+    .stage-desc.show { display: block; }
+
+    /* ANGLES */
+    .angles-list { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; padding-right: 4px; }
+    .angles-list::-webkit-scrollbar { width: 6px; }
+    .angles-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
+    .angle-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: var(--white);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      width: 100%;
+      font-family: var(--font);
+    }
+    .angle-btn:hover { background: var(--mint-light); border-color: var(--teal); }
+    .angle-btn.active { background: var(--mint-light); border-color: var(--teal); }
+    .angle-num {
+      width: 24px; height: 24px; flex-shrink: 0;
+      border-radius: 8px;
+      background: var(--sand);
+      font-size: 11px; font-weight: 700;
+      color: var(--dark); opacity: 0.6;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .angle-btn.active .angle-num { background: var(--teal); color: white; opacity: 1; }
+    .angle-label { font-size: 13px; color: var(--dark); line-height: 1.3; font-weight: 500; }
+
+    /* CONTROLS */
+    .control-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .control-label { font-size: 13px; color: var(--dark); opacity: 0.8; font-weight: 500; }
+    .stepper { display: flex; align-items: center; gap: 6px; }
+    .step-btn {
+      width: 32px; height: 32px;
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      background: var(--sand);
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--dark);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+      line-height: 1;
+    }
+    .step-btn:hover { background: var(--mint-light); border-color: var(--teal); color: var(--teal-dark); }
+    .step-val { width: 24px; text-align: center; font-weight: 800; font-size: 15px; }
+
+    .btn-generate {
+      width: 100%;
+      padding: 14px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease-in-out, box-shadow 0.15s, background 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-generate:hover:not(:disabled) { transform: scale(1.03); box-shadow: 0 4px 16px rgba(58,191,170,0.35); }
+    .btn-generate:disabled { background: var(--border); opacity: 0.7; cursor: not-allowed; }
+
+    /* ── MAIN OUTPUT ── */
+    .main { display: flex; flex-direction: column; gap: 14px; }
+
+    .empty-state {
+      background: var(--white);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 72px 40px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .empty-deco { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+    .empty-deco span { width: 14px; height: 14px; border-radius: 50%; animation: float 4s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    .empty-title { font-size: 22px; font-weight: 800; color: var(--dark); margin-bottom: 8px; letter-spacing: -0.4px; }
+    .empty-desc { font-size: 14px; color: var(--dark); opacity: 0.5; }
+
+    .loading-state {
+      background: var(--white);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 56px 40px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .spinner {
+      width: 38px; height: 38px;
+      border: 3px solid var(--mint-light);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 18px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 14px; color: var(--dark); opacity: 0.55; }
+
+    /* CAROUSEL HEADER */
+    .carousel-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      background: var(--white);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+    }
+    .carousel-meta { display: flex; flex-direction: column; gap: 4px; }
+    .carousel-chips { display: flex; gap: 6px; margin-bottom: 2px; flex-wrap: wrap; }
+    .chip {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+      padding: 3px 10px; border-radius: var(--radius-pill);
+    }
+    .chip-stage { background: var(--teal); color: white; }
+    .chip-count { background: var(--lavender-light); color: #7050B0; }
+    .carousel-angle { font-size: 15px; font-weight: 700; color: var(--dark); letter-spacing: -0.2px; }
+    .btn-export {
+      padding: 9px 16px;
+      background: transparent;
+      border: 2px solid var(--teal);
+      border-radius: var(--radius-pill);
+      font-family: var(--font);
+      font-size: 13px; font-weight: 700;
+      color: var(--teal);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-export:hover { background: var(--teal); color: white; }
+
+    /* SLIDE CARDS */
+    .slide-card {
+      background: var(--white);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      animation: fadeUp 0.5s ease both;
+    }
+    @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+
+    .slide-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--sand);
+    }
+    .slide-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: var(--radius-pill);
+    }
+    .pill-hook { background: var(--blush-light); color: #C05070; }
+    .pill-content { background: var(--mint-light); color: var(--teal-dark); }
+    .pill-cta { background: var(--peach-light); color: #C07030; }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.6; }
+
+    .btn-copy {
+      font-family: var(--font);
+      font-size: 12px; font-weight: 700;
+      padding: 5px 14px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-pill);
+      background: white;
+      color: var(--dark);
+      opacity: 0.8;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-copy:hover { background: var(--mint-light); border-color: var(--teal); color: var(--teal-dark); opacity: 1; }
+    .btn-copy.copied { background: var(--teal); border-color: var(--teal); color: white; opacity: 1; }
+
+    .slide-body { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .field-block { display: flex; flex-direction: column; gap: 6px; }
+    .field-name {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--dark); opacity: 0.4;
+    }
+    .field-val {
+      font-size: 14px; color: var(--dark);
+      line-height: 1.55;
+      background: var(--sand);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      flex: 1;
+    }
+    .field-val.img-desc {
+      border: 1px dashed var(--border);
+      background: var(--white);
+      color: var(--dark);
+      opacity: 0.75;
+      font-size: 13px;
+      font-style: italic;
+    }
+    .field-val.cta-btn {
+      background: var(--teal);
+      color: white;
+      font-weight: 800;
+      font-size: 15px;
+      text-align: center;
+      border-radius: var(--radius-pill);
+      flex: none;
+    }
+
+    /* ERROR */
+    .error-card {
+      background: var(--blush-light);
+      border: 1px solid var(--blush);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+    }
+    .error-title { font-weight: 800; color: var(--coral); margin-bottom: 8px; font-size: 14px; }
+    .error-body { font-size: 13px; color: #8b2c1c; line-height: 1.6; font-family: monospace; background: rgba(255,255,255,0.6); padding: 10px; border-radius: 8px; word-break: break-all; }
+
+    /* RESPONSIVE */
+    @media (max-width: 820px) {
+      .container { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .slide-body { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div class="hdr">
-    <div class="hdr-deco"></div><div class="hdr-deco2"></div>
-    <h1>Ad Pipeline</h1>
-    <p>Guion · Personajes · NanoBanana · Meta Ads</p>
-  </div>
+<header>
+  <div class="logo-mark">K</div>
+  <span class="logo-text">Kiper <span>Ads</span></span>
+  <span class="logo-sub">Generador de carruseles</span>
+</header>
 
-  <div class="brief-card">
-    <div class="brief-deco"></div>
-    <div class="sec-label">Brief del anuncio</div>
-    <div class="field">
-      <label>Plataforma</label>
-      <select id="plataforma">
-        <option>Instagram Reels</option><option>TikTok</option><option>YouTube Shorts</option><option>Facebook Feed</option><option>Facebook Reels</option>
-      </select>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- API KEY -->
+    <div class="card">
+      <p class="card-title">API Key de Anthropic</p>
+      <div class="api-row">
+        <input type="password" class="api-input" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off" />
+        <button class="btn-icon" id="toggleKey" title="Mostrar/ocultar">👁</button>
+      </div>
+      <p class="api-note">
+        Obtén tu key en <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>.<br>
+        Se guarda solo en tu navegador (localStorage).
+      </p>
     </div>
-    <div class="field">
-      <label>Duración</label>
-      <select id="duracion">
-        <option>15 segundos</option><option selected>30 segundos</option><option>45 segundos</option><option>60 segundos</option>
-      </select>
+
+    <!-- ETAPA DEL FUNNEL -->
+    <div class="card">
+      <p class="card-title">Etapa del funnel</p>
+      <div class="segmented" id="stageList"></div>
+      <div class="stage-desc" id="stageDesc"></div>
     </div>
-    <div class="field">
-      <label>Arquetipo</label>
-      <select id="arquetipo" onchange="onArq()">
-        <option value="">— elige el arquetipo —</option>
-        <option value="A">A · Cinemático emocional</option>
-        <option value="B">B · Estático conceptual</option>
-        <option value="D">D · La voz del hijo ★ mayor conversión</option>
-        <option value="C" disabled>C · UGC padre a cámara — no convierte para Kiper</option>
-      </select>
-      <div class="arq-desc" id="arqDesc"></div>
+
+    <!-- ÁNGULOS -->
+    <div class="card">
+      <p class="card-title">Ángulo de venta</p>
+      <div class="angles-list" id="anglesList"></div>
     </div>
-    <div class="field">
-      <label>Personaje principal</label>
-      <input type="text" id="personaje" placeholder="Papá 38 años, gerente, El Poblado...">
+
+    <!-- CONTROLES -->
+    <div class="card">
+      <p class="card-title">Configuración</p>
+      <div class="control-row">
+        <span class="control-label">Slides de contenido</span>
+        <div class="stepper">
+          <button class="step-btn" id="stepDown">−</button>
+          <span class="step-val" id="stepVal">3</span>
+          <button class="step-btn" id="stepUp">+</button>
+        </div>
+      </div>
+      <button class="btn-generate" id="genBtn" disabled>
+        <span id="genIcon">✦</span>
+        <span id="genText">Completa los campos</span>
+      </button>
     </div>
-    <div class="field">
-      <label>Ángulo específico (opcional)</label>
-      <textarea id="angulo" placeholder="Ej: el hijo llama al papá desde el recreo..."></textarea>
+
+  </aside>
+
+  <!-- OUTPUT -->
+  <main class="main" id="output">
+    <div class="empty-state">
+      <div class="empty-deco">
+        <span style="background:var(--blush);animation-delay:0s;"></span>
+        <span style="background:var(--lavender);animation-delay:0.6s;"></span>
+        <span style="background:var(--peach);animation-delay:1.2s;"></span>
+      </div>
+      <div class="empty-title">Listo para generar</div>
+      <div class="empty-desc">Agrega tu API key, elige etapa + ángulo<br>y presiona generar.</div>
     </div>
-  </div>
-
-  <div class="card" id="card1">
-    <div class="agent-hdr"><span class="badge b1">Agente 01</span><span class="agent-title">Director Creativo</span><span class="dot"></span></div>
-    <p class="agent-desc">3 versiones del guion con segundo a segundo, tomas y detalles visuales.</p>
-    <div class="vpick" id="vpick">
-      <span class="vlabel">Usar →</span>
-      <button class="vbtn sel" id="vb1" onclick="selV(1)">Versión 1</button>
-      <button class="vbtn" id="vb2" onclick="selV(2)">Versión 2</button>
-      <button class="vbtn" id="vb3" onclick="selV(3)">Versión 3</button>
-    </div>
-    <div class="sec-label">Output</div>
-    <div class="out-box" id="out1">— esperando ejecución —</div>
-    <button class="btn-copy" onclick="cpBox('out1')">Copiar</button>
-  </div>
-
-  <div class="connector">↓</div>
-
-  <div class="card" id="card2">
-    <div class="agent-hdr"><span class="badge b2">Agente 02</span><span class="agent-title">Character Designer</span><span class="dot"></span></div>
-    <p class="agent-desc">Un prompt por cada personaje, listo para GPT-4o.</p>
-    <div class="sec-label">Output</div>
-    <div class="out-box" id="out2">— esperando ejecución —</div>
-    <button class="btn-copy" onclick="cpBox('out2')">Copiar</button>
-  </div>
-
-  <div class="connector">↓</div>
-
-  <div class="card" id="card3">
-    <div class="agent-hdr"><span class="badge b3">Agente 03</span><span class="agent-title" id="title3">NanoBanana</span><span class="dot"></span></div>
-    <p class="agent-desc" id="desc3">Un prompt de video por cada toma del guion.</p>
-    <div class="sec-label">Output</div>
-    <div class="out-box" id="out3">— esperando ejecución —</div>
-    <button class="btn-copy" onclick="cpBox('out3')">Copiar</button>
-  </div>
-
-  <div class="connector">↓</div>
-
-  <div class="card" id="card4">
-    <div class="agent-hdr"><span class="badge b4">Agente 04</span><span class="agent-title">Meta Ads Copy</span><span class="dot"></span></div>
-    <p class="agent-desc">Texto principal, titular, descripción y CTA para Meta Ads Manager.</p>
-    <div class="sec-label">Output</div>
-    <div id="out4meta"><div class="out-box">— esperando ejecución —</div></div>
-  </div>
-
-  <div class="run-row">
-    <button class="btn-run" id="runBtn" onclick="run()">Generar anuncio</button>
-    <button class="btn-reset" onclick="reset()">↺</button>
-  </div>
-  <div class="prog" id="prog"><div class="prog-fill" id="progFill"></div></div>
+  </main>
 
 </div>
-<div class="toast" id="toast"></div>
 
 <script>
-const ARQ_INFO = {
-  A: { label:'Cinemático emocional', badge:'ab-a', desc:'Video 25–40s. Clips cotidianos reales de niños. Sin voz en off. Texto en pantalla lo agregas tú en edición. Música suave o funk ligero. Hook en 3s sobre identidad del niño o decisión del padre. Features al final. Motor: orgullo e identidad del padre.' },
-  B: { label:'Estático conceptual', badge:'ab-b', desc:'Imagen estática. Fondo limpio (blanco, azul claro o crema). Headline bold que desafía una norma social (máx 8 palabras). Subfrase validadora. Features con iconos. Logo Kiper centrado abajo. Motor: inteligencia y postura intelectual del padre.' },
-  D: { label:'La voz del hijo ★', badge:'ab-d', desc:'Video 25–35s. Niños en cámara lenta mirando a cámara — expresión natural, no actuada. Sin adultos. Texto narrativo lo agregas tú en edición. Música instrumental suave. Hook en 3s sobre ausencia del padre con amor, no culpa. Producto como plano detalle al final. Mayor volumen de ventas en la historia de Kiper.' }
-};
+  /* ── ETAPAS DEL FUNNEL ── */
+  const STAGES = {
+    TOFU: {
+      name: "TOFU",
+      tag: "Frío",
+      desc: "Frío · no te conoce. Vende la idea del ángulo, sin precio ni specs. CTA suave.",
+      prompt: `ETAPA DEL FUNNEL: TOFU (público frío, no conoce Kiper).
+- OBJETIVO: parar el scroll y vender la IDEA del ángulo, no el reloj. Crear la realización en la cabeza del papá.
+- PROHIBIDO en esta etapa: mencionar precio, plan mensual o specs técnicas. Nada de "$", nada de listas de funciones.
+- El hook debe dejar una idea abierta que OBLIGUE a deslizar. No resuelvas nada en el slide 1.
+- CTA suave, de descubrimiento. Botón tipo "Descúbrelo" / "Conoce Kiper". Nada de "compra".`
+    },
+    MOFU: {
+      name: "MOFU",
+      tag: "Tibio",
+      desc: "Tibio · ya te vio o conoce la categoría. Mecanismo + prueba + reframe de precio. CTA medio.",
+      prompt: `ETAPA DEL FUNNEL: MOFU (público tibio, ya vio Kiper o conoce la categoría del reloj para niños).
+- OBJETIVO: mostrar el mecanismo y dar prueba. Manejar la objeción real "¿de verdad funciona?" y "¿mi hijo lo va a usar?".
+- Puedes mencionar 1–2 funciones clave de forma concreta (GPS en tiempo real, llamadas solo a contactos aprobados, foto remota). Una por slide, no listas.
+- Reframe de precio permitido como idea, NO como número: "cuesta menos que el celular que no le vas a dar".
+- Al menos un slide de contenido debe manejar una objeción, no rellenar.
+- CTA de consideración. Botón tipo "Mira cómo funciona" / "Conoce el plan".`
+    },
+    BOFU: {
+      name: "BOFU",
+      tag: "Caliente",
+      desc: "Caliente · retargeting. Justifica precio, contraentrega, garantía y cierra duro.",
+      prompt: `ETAPA DEL FUNNEL: BOFU (público caliente, retargeting: ya te visitó, vio el producto o abandonó el carrito).
+- OBJETIVO: cerrar la venta. Asume que ya quiere Kiper; solo le falta el empujón.
+- DEBES justificar el precio: $399.900 COP con plan mensual de $32.900, y resaltar el PAGO CONTRAENTREGA (clave en Colombia para bajar la fricción de un ticket alto).
+- Incluye al menos un elemento de cierre: garantía, prueba social (otros papás ya lo eligieron), o urgencia suave y honesta. Nada de falsa escasez.
+- CTA duro y directo. Botón tipo "Lo quiero" / "Pídelo contraentrega".`
+    }
+  };
 
-let fullScript='', chosenV=1, currentArq='';
+  /* ── ÁNGULOS ── */
+  const ANGLES = [
+    {n:1, t:"Papá que decide diferente"},
+    {n:2, t:"No quiere perderse la niñez"},
+    {n:3, t:"No todo avance es progreso"},
+    {n:4, t:"Conexión sin adelantar etapas"},
+    {n:5, t:"El celular ya no es la única opción"},
+    {n:6, t:"Profesional y papá presente"},
+    {n:7, t:"Minimalismo en comunicación"},
+    {n:8, t:"Orden en el uso de celulares"},
+    {n:9, t:"Niño incomunicado no es lo adecuado"},
+    {n:10, t:"Un paso adelante"},
+    {n:11, t:"Demo producto en uso real"},
+    {n:12, t:"Cuidar y escucharlos tú mismo"},
+    {n:13, t:"Presente sin sofocar"},
+  ];
 
-function onArq(){
-  const val=document.getElementById('arquetipo').value;
-  const desc=document.getElementById('arqDesc');
-  currentArq=val;
-  if(!val){desc.classList.remove('on');return;}
-  const a=ARQ_INFO[val];
-  desc.innerHTML=`<span class="arq-badge ${a.badge}">${val} · ${a.label}</span><br>${a.desc}`;
-  desc.classList.add('on');
-  const t3=document.getElementById('title3');
-  const d3=document.getElementById('desc3');
-  if(val==='B'){t3.textContent='Especificaciones del estático';d3.textContent='Composición, headline, colores y layout para el diseñador.';}
-  else{t3.textContent='NanoBanana';d3.textContent='Un prompt de video por cada toma del guion.';}
-}
+  let selStage = null;
+  let selAngle = null;
+  let slideCount = 3;
+  let currentSlides = [];
 
-function g(id){const e=document.getElementById(id);return e?e.value.trim():'';}
-function brief(){
-  const a=g('angulo');
-  return `PLATAFORMA: ${g('plataforma')}\nDURACIÓN: ${g('duracion')}\nPERSONAJE: ${g('personaje')}${a?'\nÁNGULO: '+a:''}`;
-}
-function setCard(n,s){const e=document.getElementById('card'+n);if(e)e.className='card '+(s||'');}
-function setOut(id,text,loading=false){
-  const b=document.getElementById(id);if(!b)return;
-  if(loading){b.innerHTML='<div class="think"><span></span><span></span><span></span></div>';b.className='out-box';}
-  else{b.textContent=text;b.className='out-box'+(text&&!text.startsWith('—')?' has':'');}
-}
-function setProg(p){document.getElementById('progFill').style.width=p+'%';}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400);}
+  /* ── API KEY ── */
+  const apiInput = document.getElementById('apiKey');
+  const saved = localStorage.getItem('kiper_api_key');
+  if (saved) apiInput.value = saved;
+  apiInput.addEventListener('input', () => {
+    localStorage.setItem('kiper_api_key', apiInput.value.trim());
+    updateGenBtn();
+  });
+  document.getElementById('toggleKey').addEventListener('click', () => {
+    apiInput.type = apiInput.type === 'password' ? 'text' : 'password';
+  });
 
-async function api(agente, userContent){
-  const body={agente, messages:[{role:'user',content:userContent}]};
-  if(agente===1||agente===3) body.arquetipo=currentArq;
-  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  let d;try{d=await r.json();}catch(e){throw new Error('Respuesta inválida');}
-  if(!r.ok||d.error)throw new Error(d?.error?.message||'HTTP '+r.status);
-  if(!Array.isArray(d.content))throw new Error('Formato inesperado');
-  const tb=d.content.find(b=>b.type==='text');
-  if(!tb)throw new Error('Sin bloque de texto');
-  return tb.text;
-}
+  /* ── ETAPAS (render) ── */
+  const stageList = document.getElementById('stageList');
+  const stageDesc = document.getElementById('stageDesc');
+  Object.keys(STAGES).forEach(key => {
+    const s = STAGES[key];
+    const btn = document.createElement('button');
+    btn.className = 'seg-btn';
+    btn.innerHTML = `<div class="seg-name">${s.name}</div><div class="seg-tag">${s.tag}</div>`;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selStage = key;
+      stageDesc.textContent = s.desc;
+      stageDesc.classList.add('show');
+      updateGenBtn();
+    });
+    stageList.appendChild(btn);
+  });
 
-function extractV(text,n){
-  const re=new RegExp('VERSIÓN\\s*'+n+'[:\\s]','i');
-  const rn=new RegExp('VERSIÓN\\s*'+(n+1)+'[:\\s]','i');
-  const s=text.search(re);if(s===-1)return text;
-  const e=n<3?text.search(rn):text.length;
-  return text.slice(s,e<0?text.length:e).trim();
-}
+  /* ── ÁNGULOS (render) ── */
+  const list = document.getElementById('anglesList');
+  ANGLES.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'angle-btn';
+    btn.innerHTML = `<span class="angle-num">${a.n}</span><span class="angle-label">${a.t}</span>`;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.angle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selAngle = a;
+      updateGenBtn();
+    });
+    list.appendChild(btn);
+  });
 
-function selV(n){chosenV=n;[1,2,3].forEach(i=>document.getElementById('vb'+i).classList.toggle('sel',i===n));toast('Versión '+n+' seleccionada');}
+  /* ── STEPPER ── */
+  document.getElementById('stepDown').addEventListener('click', () => {
+    if (slideCount > 2) { slideCount--; document.getElementById('stepVal').textContent = slideCount; }
+  });
+  document.getElementById('stepUp').addEventListener('click', () => {
+    if (slideCount < 6) { slideCount++; document.getElementById('stepVal').textContent = slideCount; }
+  });
 
-function renderMeta(text){
-  const fields=[{key:'TEXTO PRINCIPAL',label:'Texto principal'},{key:'TITULAR',label:'Titular'},{key:'DESCRIPCIÓN',label:'Descripción'},{key:'CTA',label:'CTA'}];
-  let html='<div class="meta-grid">';
-  for(let i=0;i<fields.length;i++){
-    const{key,label}=fields[i];const nk=i<fields.length-1?fields[i+1].key:null;
-    const re=new RegExp(key+':\\s*([\\s\\S]*?)'+(nk?nk+':':'$'),'i');
-    const m=text.match(re);const val=m?m[1].trim():'—';
-    html+=`<div class="meta-blk"><div class="meta-blk-title">${label}</div><div class="meta-blk-val" id="mv${i}">${val}</div><button class="meta-copy" onclick="cpMeta(${i})">Copiar</button></div>`;
+  /* ── GEN BUTTON STATE ── */
+  function updateGenBtn() {
+    const btn = document.getElementById('genBtn');
+    const txt = document.getElementById('genText');
+    const key = apiInput.value.trim();
+    if (!key) { txt.textContent = 'Falta la API key'; btn.disabled = true; return; }
+    if (!selStage) { txt.textContent = 'Elige una etapa'; btn.disabled = true; return; }
+    if (!selAngle) { txt.textContent = 'Elige un ángulo'; btn.disabled = true; return; }
+    txt.textContent = 'Generar carrusel';
+    btn.disabled = false;
   }
-  html+='</div>';document.getElementById('out4meta').innerHTML=html;
-}
 
-async function run(){
-  if(!currentArq){toast('Elige un arquetipo');return;}
-  if(!g('personaje')){toast('Completa el personaje');return;}
-  const btn=document.getElementById('runBtn');
-  btn.disabled=true;btn.textContent='Generando...';
-  document.getElementById('prog').style.display='block';
-  document.getElementById('vpick').classList.remove('on');
-  setProg(0);
-  const b=brief();
+  /* ── GENERATE ── */
+  document.getElementById('genBtn').addEventListener('click', generate);
 
-  try{
-    setCard(1,'active');setOut('out1','',true);setProg(5);
-    fullScript=await api(1,b);
-    setCard(1,'done');setOut('out1',fullScript);setProg(28);
-    document.getElementById('vpick').classList.add('on');
-    toast('Guion listo — elige versión o continúa con la 1');
-  }catch(e){setCard(1,'error');setOut('out1','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
+  async function generate() {
+    const key = apiInput.value.trim();
+    if (!key || !selStage || !selAngle) return;
 
-  await new Promise(r=>setTimeout(r,600));
-  const script=extractV(fullScript,chosenV);
+    const btn = document.getElementById('genBtn');
+    const txt = document.getElementById('genText');
+    const out = document.getElementById('output');
+    const stage = STAGES[selStage];
 
-  try{
-    setCard(2,'active');setOut('out2','',true);setProg(42);
-    const o2=await api(2,'BRIEF:\n'+b+'\n\nGUION (Versión '+chosenV+'):\n'+script);
-    setCard(2,'done');setOut('out2',o2);setProg(58);
-  }catch(e){setCard(2,'error');setOut('out2','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
+    btn.disabled = true;
+    txt.textContent = 'Generando...';
+    out.innerHTML = `<div class="loading-state"><div class="spinner"></div><p class="loading-text">Escribiendo el carrusel con IA...</p></div>`;
 
-  try{
-    setCard(3,'active');setOut('out3','',true);setProg(65);
-    const o3=await api(3,'BRIEF:\n'+b+'\n\nGUION (Versión '+chosenV+'):\n'+script);
-    setCard(3,'done');setOut('out3',o3);setProg(80);
-  }catch(e){setCard(3,'error');setOut('out3','⚠ '+e.message);btn.disabled=false;btn.textContent='Generar anuncio';return;}
+    const prompt = `Eres copywriter senior de performance especializado en Meta Ads para marcas de familia y crianza consciente en Colombia.
 
-  try{
-    setCard(4,'active');
-    document.getElementById('out4meta').innerHTML='<div class="out-box"><div class="think"><span></span><span></span><span></span></div></div>';
-    setProg(88);
-    const o4=await api(4,'BRIEF:\n'+b+'\nARQUETIPO: '+currentArq+' — '+ARQ_INFO[currentArq].label+'\n\nGUION (Versión '+chosenV+'):\n'+script);
-    setCard(4,'done');renderMeta(o4);setProg(100);
-  }catch(e){
-    setCard(4,'error');
-    document.getElementById('out4meta').innerHTML='<div class="out-box">⚠ '+e.message+'</div>';
-    btn.disabled=false;btn.textContent='Generar anuncio';return;
+VOZ DE MARCA — KIPER:
+Kiper no le habla al papá con miedo. Le habla al papá con criterio.
+Al que sabe lo que está construyendo. Al que quiere estar presente sin perderse una sola etapa.
+Al que entiende que hay una diferencia enorme entre un hijo monitoreado y un hijo que te busca a ti primero cuando algo pasa.
+Al que se niega a creer que la única forma de estar conectado con su hijo es darle un smartphone.
+Tono: cálido, seguro, inteligente. Nunca alarmista. Nunca culposo. Nunca corporativo.
+
+PRODUCTO: Kiper — reloj inteligente para niños 6–12 años. La alternativa al smartphone para el papá que quiere conexión real, no vigilancia.
+FUNCIONES CLAVE: llamadas solo a contactos aprobados, mensajes de voz, GPS en tiempo real, foto remota desde el reloj, juegos educativos, control parental por WhatsApp. Sin redes sociales, sin apps, sin navegador.
+OFERTA (úsala solo cuando la etapa lo permita): precio $399.900 COP, plan mensual $32.900 COP, pago contraentrega disponible en Colombia. Producto de decisión, no de impulso.
+
+ÁNGULO: Ángulo ${selAngle.n} — "${selAngle.t}"
+
+${stage.prompt}
+
+Genera exactamente ${slideCount + 2} slides: 1 hook + ${slideCount} contenido + 1 CTA.
+
+REGLAS DE COPY — MUY IMPORTANTES:
+- Hook: máx 8 palabras. Una sola idea. Que pare el scroll.
+- Título de cada slide: máx 5 palabras. Concreto y humano.
+- Mensaje de cada slide: máx 2 frases cortas, máx 18 palabras en total. Una idea por slide.
+- CTA: máx 10 palabras. Botón: máx 3 palabras.
+- Escritura en oración (primera letra mayúscula, resto minúscula). NUNCA TODO EN MAYÚSCULAS. Habla de tú.
+- Sin párrafos, sin listas, sin signos de exclamación de más, sin inglés innecesario.
+- Nada de palabras como "peligro", "riesgo", "adicción", "amenaza". Tono positivo y aspiracional.
+
+REGLAS DE IMAGEN — describe una slide DISEÑADA en el sistema visual de Kiper, NO fotografía ni render de IA:
+- Fondo arena #F0EDE6. Pasteles planos de la paleta (blush #F2C4CE, lavender #C9B8E8, mint #A8D8C8, peach #F5C49A, sky #A3CDED). Máximo 4 colores por slide.
+- Elementos ilustrativos simples y cálidos (sol, arcoíris, corazón, planeta, nube). Máximo 3 por slide.
+- Tipografía Plus Jakarta Sans, texto alineado a la izquierda, mucho espacio en blanco, sombras suaves.
+- PROHIBIDO: fotografía realista, render 3D, gradientes complejos, estética de IA genérica, colores neón fuera de la paleta.
+
+Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
+{
+  "angulo": "${selAngle.t}",
+  "etapa": "${stage.name}",
+  "slides": [
+    { "tipo": "hook", "mensaje": "texto del hook", "imagen": "descripción de la slide diseñada" },
+    { "tipo": "contenido", "titulo": "título corto", "mensaje": "máx 2 frases cortas", "imagen": "descripción de la slide diseñada" },
+    { "tipo": "cta", "mensaje": "cierre breve con llamado a la acción", "boton": "texto del botón", "imagen": "descripción de la slide diseñada" }
+  ]
+}`;
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1500,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      if (!resp.ok) {
+        const errBody = await resp.text();
+        throw new Error(`HTTP ${resp.status}: ${errBody.slice(0, 400)}`);
+      }
+
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+      const raw = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('No se encontró JSON en la respuesta.\n\nRespuesta: ' + raw.slice(0, 300));
+
+      const parsed = JSON.parse(match[0]);
+      if (!parsed.slides || !Array.isArray(parsed.slides)) throw new Error('Estructura inesperada en el JSON.');
+
+      currentSlides = parsed.slides;
+      renderCarousel(parsed.slides);
+
+    } catch (err) {
+      out.innerHTML = `<div class="error-card">
+        <div class="error-title">Error al generar</div>
+        <div class="error-body">${err.message}</div>
+      </div>`;
+    }
+
+    btn.disabled = false;
+    txt.textContent = 'Generar otro';
   }
 
-  btn.disabled=false;btn.textContent='Generar anuncio';
-  toast('Pipeline completo ✓');
-}
+  /* ── RENDER ── */
+  function renderCarousel(slides) {
+    const out = document.getElementById('output');
+    const stage = STAGES[selStage];
+    let html = `
+      <div class="carousel-header">
+        <div class="carousel-meta">
+          <div class="carousel-chips">
+            <span class="chip chip-stage">${stage.name} · ${stage.tag}</span>
+            <span class="chip chip-count">${slides.length} slides</span>
+          </div>
+          <span class="carousel-angle">Ángulo ${selAngle.n}: ${selAngle.t}</span>
+        </div>
+        <button class="btn-export" onclick="exportAll()">⬇ Exportar todo</button>
+      </div>`;
 
-function reset(){
-  [1,2,3,4].forEach(n=>setCard(n,''));
-  setOut('out1','— esperando ejecución —');setOut('out2','— esperando ejecución —');setOut('out3','— esperando ejecución —');
-  document.getElementById('out4meta').innerHTML='<div class="out-box">— esperando ejecución —</div>';
-  document.getElementById('vpick').classList.remove('on');
-  document.getElementById('prog').style.display='none';
-  setProg(0);fullScript='';chosenV=1;currentArq='';
-  document.getElementById('arquetipo').value='';
-  document.getElementById('arqDesc').classList.remove('on');
-  document.getElementById('title3').textContent='NanoBanana';
-  document.getElementById('desc3').textContent='Un prompt de video por cada toma del guion.';
-  [1,2,3].forEach(i=>document.getElementById('vb'+i).classList.toggle('sel',i===1));
-}
+    slides.forEach((s, i) => {
+      const isHook = s.tipo === 'hook';
+      const isCta  = s.tipo === 'cta';
+      const pillClass = isHook ? 'pill-hook' : isCta ? 'pill-cta' : 'pill-content';
+      const pillLabel = isHook ? `Slide 1 · Hook` : isCta ? `Slide ${i+1} · CTA` : `Slide ${i+1} · Contenido`;
 
-function cpBox(id){const t=document.getElementById(id)?.textContent;if(!t||t.startsWith('—'))return;navigator.clipboard.writeText(t).then(()=>toast('Copiado ✓'));}
-function cpMeta(i){const t=document.getElementById('mv'+i)?.textContent;if(t)navigator.clipboard.writeText(t).then(()=>toast('Copiado ✓'));}
+      let body = '';
+      if (isHook) {
+        body = `
+          <div class="field-block">
+            <span class="field-name">Mensaje</span>
+            <div class="field-val">${s.mensaje || ''}</div>
+          </div>
+          <div class="field-block">
+            <span class="field-name">🖼 Slide sugerida</span>
+            <div class="field-val img-desc">${s.imagen || ''}</div>
+          </div>`;
+      } else if (isCta) {
+        body = `
+          <div class="field-block">
+            <span class="field-name">Mensaje</span>
+            <div class="field-val">${s.mensaje || ''}</div>
+            <div class="field-val cta-btn">${s.boton || ''}</div>
+          </div>
+          <div class="field-block">
+            <span class="field-name">🖼 Slide sugerida</span>
+            <div class="field-val img-desc">${s.imagen || ''}</div>
+          </div>`;
+      } else {
+        body = `
+          <div class="field-block">
+            ${s.titulo ? `<span class="field-name">Título</span><div class="field-val" style="font-weight:700">${s.titulo}</div>` : ''}
+            <span class="field-name">Mensaje</span>
+            <div class="field-val">${s.mensaje || ''}</div>
+          </div>
+          <div class="field-block">
+            <span class="field-name">🖼 Slide sugerida</span>
+            <div class="field-val img-desc">${s.imagen || ''}</div>
+          </div>`;
+      }
+
+      html += `
+        <div class="slide-card" style="animation-delay:${i * 0.06}s">
+          <div class="slide-top">
+            <span class="slide-pill ${pillClass}"><span class="pill-dot"></span>${pillLabel}</span>
+            <button class="btn-copy" id="copy-${i}" onclick="copySlide(${i})">Copiar</button>
+          </div>
+          <div class="slide-body">${body}</div>
+        </div>`;
+    });
+
+    out.innerHTML = html;
+  }
+
+  /* ── COPY ── */
+  function copySlide(i) {
+    const s = currentSlides[i];
+    let text = '';
+    if (s.tipo === 'hook')
+      text = `HOOK:\n${s.mensaje}\n\nSLIDE SUGERIDA: ${s.imagen}`;
+    else if (s.tipo === 'cta')
+      text = `CTA:\n${s.mensaje}\nBotón: ${s.boton}\n\nSLIDE SUGERIDA: ${s.imagen}`;
+    else
+      text = `${s.titulo ? 'TÍTULO: ' + s.titulo + '\n' : ''}MENSAJE:\n${s.mensaje}\n\nSLIDE SUGERIDA: ${s.imagen}`;
+
+    navigator.clipboard.writeText(text).catch(() => {});
+    const btn = document.getElementById(`copy-${i}`);
+    btn.textContent = '✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  }
+
+  function exportAll() {
+    const stage = STAGES[selStage];
+    let text = `CARRUSEL KIPER\nEtapa: ${stage.name} (${stage.tag})  ·  Ángulo ${selAngle.n}: ${selAngle.t}\n${'─'.repeat(50)}\n\n`;
+    currentSlides.forEach((s, i) => {
+      text += `SLIDE ${i+1} (${s.tipo.toUpperCase()})\n`;
+      if (s.tipo === 'hook')
+        text += `Mensaje: ${s.mensaje}\nSlide: ${s.imagen}\n\n`;
+      else if (s.tipo === 'cta')
+        text += `Mensaje: ${s.mensaje}\nBotón: ${s.boton}\nSlide: ${s.imagen}\n\n`;
+      else
+        text += `${s.titulo ? 'Título: ' + s.titulo + '\n' : ''}Mensaje: ${s.mensaje}\nSlide: ${s.imagen}\n\n`;
+    });
+    navigator.clipboard.writeText(text).catch(() => {});
+    const btn = document.querySelector('.btn-export');
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => { btn.textContent = '⬇ Exportar todo'; }, 2500);
+  }
 </script>
 </body>
 </html>
