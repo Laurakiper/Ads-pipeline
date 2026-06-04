@@ -566,19 +566,19 @@ REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicio
 
   /* ── ÁNGULOS ── */
   const ANGLES = [
-    {n:1, t:"Papá que decide diferente"},
-    {n:2, t:"No quiere perderse la niñez"},
-    {n:3, t:"No todo avance es progreso"},
-    {n:4, t:"Conexión sin adelantar etapas"},
-    {n:5, t:"El celular ya no es la única opción"},
-    {n:6, t:"Profesional y papá presente"},
-    {n:7, t:"Minimalismo en comunicación"},
-    {n:8, t:"Orden en el uso de celulares"},
-    {n:9, t:"Niño incomunicado no es lo adecuado"},
-    {n:10, t:"Un paso adelante"},
-    {n:11, t:"Demo producto en uso real"},
-    {n:12, t:"Cuidar y escucharlos tú mismo"},
-    {n:13, t:"Presente sin sofocar"},
+    {n:1, t:"Papá que decide diferente", b:"INSIGHT: el papá que no sigue al rebaño. Aunque todos les den celular a sus hijos, él decide con criterio propio. NÚCLEO: orgullo de identidad, decisión consciente. DIFERENCIA: el eje es el papá y su carácter, no el producto ni el miedo."},
+    {n:2, t:"No quiere perderse la niñez", b:"INSIGHT: la niñez es cortísima y un smartphone la acelera y la roba. Quiere vivir esa etapa, no adelantarla. NÚCLEO: nostalgia anticipada, el tiempo que no vuelve. DIFERENCIA: el eje es la infancia que se acaba, no la comunicación."},
+    {n:3, t:"No todo avance es progreso", b:"INSIGHT: cuestiona que darle smartphone sea 'avanzar'. Avanzar rápido no es mejorar. NÚCLEO: criterio crítico ante la tecnología. DIFERENCIA: el eje es una idea provocadora sobre el progreso, no la conexión."},
+    {n:4, t:"Conexión sin adelantar etapas", b:"INSIGHT: puedes estar conectado con tu hijo sin meterlo al mundo digital adulto antes de tiempo. NÚCLEO: respetar el ritmo de la infancia. DIFERENCIA: el eje es 'a su debido tiempo', el smartphone no es malo, es prematuro."},
+    {n:5, t:"El celular ya no es la única opción", b:"INSIGHT: existe una alternativa real al smartphone para comunicarte con tu hijo. NÚCLEO: alivio, descubrir una salida. DIFERENCIA: el eje es revelar que hay OTRA opción que no conocías."},
+    {n:6, t:"Profesional y papá presente", b:"INSIGHT: el papá ocupado/exitoso que igual quiere estar disponible para su hijo. NÚCLEO: no elegir entre carrera y presencia. DIFERENCIA: el eje es el papá trabajador y los momentos del día (salida del colegio, juntas)."},
+    {n:7, t:"Minimalismo en comunicación", b:"INSIGHT: comunicación esencial, sin ruido ni sobreexposición. Lo justo y necesario. NÚCLEO: calma, menos es más. DIFERENCIA: el eje es la simpleza intencional, no la seguridad."},
+    {n:8, t:"Orden en el uso de celulares", b:"INSIGHT: poner reglas y estructura al uso de tecnología en casa. NÚCLEO: control, orden parental, límites sanos. DIFERENCIA: el eje es la disciplina familiar, el papá que pone las reglas."},
+    {n:9, t:"Niño incomunicado no es lo adecuado", b:"INSIGHT: dejar al niño SIN forma de comunicarse tampoco está bien. El extremo opuesto al smartphone (la nada, el silencio) también falla. Kiper es el punto medio. NÚCLEO: romper el falso binario 'smartphone o nada'. DIFERENCIA: el eje NO es 'no le des celular' (eso es otro ángulo); es 'no lo dejes incomunicado tampoco'. Habla del riesgo de quedarse corto."},
+    {n:10, t:"Un paso adelante", b:"INSIGHT: los papás que se anticipan, que van adelante de la curva en crianza. NÚCLEO: pertenencia a un grupo pionero, estar adelantado. DIFERENCIA: el eje es 'esto ya lo están haciendo los papás que van un paso adelante'."},
+    {n:11, t:"Demo producto en uso real", b:"INSIGHT: mostrar Kiper funcionando en la vida real del niño. NÚCLEO: prueba tangible, ver es creer. DIFERENCIA: el eje es la demostración concreta de una función en acción, no una idea abstracta."},
+    {n:12, t:"Cuidar y escucharlos tú mismo", b:"INSIGHT: el papá quiere ser ÉL quien cuida y escucha a su hijo, de primera mano. NÚCLEO: vínculo directo, ser el primero al que el hijo busca. DIFERENCIA: el eje es la relación tú-hijo, no delegar el cuidado."},
+    {n:13, t:"Presente sin sofocar", b:"INSIGHT: estar disponible y cuidar sin invadir ni controlar de más. Libertad con red de seguridad. NÚCLEO: equilibrio entre presencia y autonomía. DIFERENCIA: el eje es el respeto al espacio del hijo, lo opuesto a vigilar."},
   ];
 
   let selStage = null;
@@ -673,18 +673,24 @@ REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicio
 
     const hooksPrompt = `Eres copywriter senior de performance para Meta Ads de Kiper, reloj inteligente para niños 6–12 años en Colombia. La marca le habla al papá con criterio, no con miedo: cálido, seguro, inteligente, nunca alarmista ni culposo.
 
-TENSIÓN CENTRAL DEL PAPÁ: "quiero saber de mi hijo, pero no quiero darle un celular".
-ÁNGULO: Ángulo ${selAngle.n} — "${selAngle.t}".
+TENSIÓN CENTRAL DEL PAPÁ (contexto de marca, NO el tema del hook): "quiero saber de mi hijo, pero no quiero darle un celular".
+
+ÁNGULO OBLIGATORIO — Ángulo ${selAngle.n}: "${selAngle.t}"
+${selAngle.b}
 ${stage.prompt}
 
 Genera 5 HOOKS distintos para este ángulo y etapa, pensados para TESTEAR cuál frena el scroll.
 
+REGLA #1 (la más importante): los 5 hooks deben nacer del INSIGHT y NÚCLEO específicos de este ángulo, NO de la tensión central de marca. La tensión central es solo el trasfondo; el hook ataca el insight único del ángulo.
+- TEST OBLIGATORIO antes de escribir cada hook: "¿este hook podría servir igual para otro ángulo de Kiper?". Si la respuesta es sí, está MAL: recházalo y reescríbelo hasta que solo tenga sentido para el Ángulo ${selAngle.n}.
+- Usa las palabras y la idea propias del ángulo. Si el ángulo habla del falso binario 'celular o nada', el hook debe tocar ESE punto, no el genérico 'saber de tu hijo sin celular'.
+
 REGLAS DEL HOOK:
 - Máx 8 palabras. Una sola idea. Su único trabajo es detener el scroll.
 - Cada hook debe ser de UNO de estos tres tipos, y debes incluir variedad entre los tres:
-  · "tension": nombra la tensión exacta del papá.
+  · "tension": nombra la tensión específica que abre este ángulo.
   · "curiosidad": abre un loop (pregunta, dato o frase incompleta) que obligue a deslizar.
-  · "reframe": idea contraintuitiva o que rompe un falso dilema.
+  · "reframe": idea contraintuitiva propia del ángulo.
 - Escritura en oración, habla de tú. Sin frases motivacionales vagas ni slogans que sirvan para cualquier marca. Sin "peligro/riesgo/adicción/amenaza".
 
 Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
@@ -798,7 +804,9 @@ PRODUCTO: Kiper — reloj inteligente para niños 6–12 años. La alternativa a
 FUNCIONES CLAVE: llamadas solo a contactos aprobados, mensajes de voz, GPS en tiempo real, foto remota desde el reloj, juegos educativos, control parental por WhatsApp. Sin redes sociales, sin apps, sin navegador.
 OFERTA (úsala solo cuando la etapa lo permita): antes $449.900, hoy $399.900 COP. Plan mensual $32.900 (ilimitado, sin permanencia, primer mes gratis incluido). Envío gratis y pago contraentrega en Colombia. Producto de decisión, no de impulso.
 
-ÁNGULO: Ángulo ${selAngle.n} — "${selAngle.t}"
+ÁNGULO OBLIGATORIO — Ángulo ${selAngle.n}: "${selAngle.t}"
+${selAngle.b}
+REGLA DE ÁNGULO: todo el carrusel (hook, slides y CTA) debe nacer del INSIGHT y NÚCLEO de este ángulo, no de la tensión genérica de marca. Antes de cada slide pregúntate: "¿esto solo tiene sentido para este ángulo, o serviría para cualquiera?". Si serviría para cualquiera, reescríbelo para que sea específico de este.
 
 ${stage.prompt}
 
@@ -806,7 +814,7 @@ Genera exactamente ${slideCount + 2} slides: 1 hook + ${slideCount} contenido + 
 
 REGLAS DE COPY — MUY IMPORTANTES:
 - HOOK (lo más importante del carrusel): máx 8 palabras, una sola idea. Su único trabajo es DETENER EL SCROLL. Debe hacer UNA de estas tres cosas:
-  1) Nombrar la tensión exacta del papá (ej. "saber de tu hijo sin darle celular").
+  1) Nombrar la tensión específica que abre ESTE ángulo (no la genérica de marca).
   2) Abrir un loop de curiosidad que obligue a deslizar: una pregunta, un dato o una afirmación incompleta. No resuelvas la idea en el hook.
   3) Romper el patrón con algo contraintuitivo o un reframe (ej. "el mejor primer celular de tu hijo no es un celular").
 - PROHIBIDO en el hook: frases motivacionales, slogans aspiracionales vagos o afirmaciones que podrían servir para cualquier marca.
