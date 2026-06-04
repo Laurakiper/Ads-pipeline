@@ -234,6 +234,52 @@
     .btn-generate:hover:not(:disabled) { transform: scale(1.03); box-shadow: 0 4px 16px rgba(58,191,170,0.35); }
     .btn-generate:disabled { background: var(--border); opacity: 0.7; cursor: not-allowed; }
 
+    .btn-hooks {
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px;
+      background: transparent;
+      color: var(--teal-dark);
+      border: 2px solid var(--teal);
+      border-radius: var(--radius-pill);
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-hooks:hover:not(:disabled) { background: var(--teal); color: white; }
+    .btn-hooks:disabled { border-color: var(--border); color: var(--dark); opacity: 0.4; cursor: not-allowed; }
+
+    /* HOOK CARDS */
+    .hook-card {
+      background: var(--white);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+      display: flex; align-items: flex-start; gap: 14px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .hook-index {
+      width: 28px; height: 28px; flex-shrink: 0;
+      border-radius: 9px;
+      background: var(--teal);
+      color: white;
+      font-weight: 800; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hook-main { flex: 1; }
+    .hook-text { font-size: 16px; font-weight: 700; color: var(--dark); line-height: 1.35; letter-spacing: -0.2px; }
+    .hook-type {
+      display: inline-block; margin-top: 7px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 3px 10px; border-radius: var(--radius-pill);
+    }
+    .type-tension { background: var(--blush-light); color: #C05070; }
+    .type-curiosidad { background: var(--mint-light); color: var(--teal-dark); }
+    .type-reframe { background: var(--peach-light); color: #C07030; }
+
     /* ── MAIN OUTPUT ── */
     .main { display: flex; flex-direction: column; gap: 14px; }
 
@@ -452,6 +498,7 @@
         <span id="genIcon">✦</span>
         <span id="genText">Completa los campos</span>
       </button>
+      <button class="btn-hooks" id="hooksBtn" disabled>⚡ Generar 5 hooks para testear</button>
     </div>
 
   </aside>
@@ -500,10 +547,20 @@
       tag: "Caliente",
       desc: "Caliente · retargeting. Justifica precio, contraentrega, garantía y cierra duro.",
       prompt: `ETAPA DEL FUNNEL: BOFU (público caliente, retargeting: ya te visitó, vio el producto o abandonó el carrito).
-- OBJETIVO: cerrar la venta. Asume que ya quiere Kiper; solo le falta el empujón.
-- DEBES justificar el precio: $399.900 COP con plan mensual de $32.900, y resaltar el PAGO CONTRAENTREGA (clave en Colombia para bajar la fricción de un ticket alto).
-- Incluye al menos un elemento de cierre: garantía, prueba social (otros papás ya lo eligieron), o urgencia suave y honesta. Nada de falsa escasez.
-- CTA duro y directo. Botón tipo "Lo quiero" / "Pídelo contraentrega".`
+- OBJETIVO: cerrar la venta. Asume que ya quiere Kiper; solo le falta el empujón y resolver la última objeción.
+- USA SOLO datos del BANCO DE ARGUMENTOS de abajo. No inventes cifras, garantías ni medios de pago.
+- UN argumento por slide. Elige los más fuertes para cerrar; no amontones todo. Orden de fuerza para liderar: prueba social → envío gratis → pago contraentrega → garantía 30 días → precio con ancla.
+- CTA duro y directo. Botón tipo "Lo quiero" / "Pídelo hoy".
+
+BANCO DE ARGUMENTOS BOFU (verídicos, úsalos tal cual):
+• PRUEBA SOCIAL: 4.9/5 en más de 1.000 reseñas · +3.000 familias ya tienen Kiper · 79 reseñas verificadas.
+• PRECIO: antes $449.900, hoy $399.900 (muestra el ancla tachada). Pago contraentrega, tarjeta de crédito, Sistecrédito (cuotas) y MercadoPago.
+• ENVÍO: gratis a todo el país, sale el mismo día o al siguiente (Coordinadora e Interrapidísimo).
+• INCLUYE: reloj + cable + cargador + SIM con 1 mes gratis de minutos y datos. Listo para usar desde el primer día, sin apps. Vidrio templado disponible.
+• GARANTÍAS: satisfacción 30 días · producto 1 año por defectos o pérdida de señal · soporte por WhatsApp con agentes reales.
+• CONTROL PARENTAL: el papá maneja todo por WhatsApp (ubicación, contactos autorizados, foto remota), desde el celular que ya tiene. Sin apps complejas.
+• PLAN POST-COMPRA: $32.900/mes, minutos y datos ilimitados, sin permanencia, se activa tras el mes gratis.
+REGLA: NO lideres ni hagas hero de "escucha de entorno" — choca con el posicionamiento (conexión, no vigilancia). Úsala solo si es estrictamente necesario y nunca como argumento principal.`
     }
   };
 
@@ -587,7 +644,10 @@
   function updateGenBtn() {
     const btn = document.getElementById('genBtn');
     const txt = document.getElementById('genText');
+    const hooksBtn = document.getElementById('hooksBtn');
     const key = apiInput.value.trim();
+    const ready = key && selStage && selAngle;
+    hooksBtn.disabled = !ready;
     if (!key) { txt.textContent = 'Falta la API key'; btn.disabled = true; return; }
     if (!selStage) { txt.textContent = 'Elige una etapa'; btn.disabled = true; return; }
     if (!selAngle) { txt.textContent = 'Elige un ángulo'; btn.disabled = true; return; }
@@ -597,6 +657,120 @@
 
   /* ── GENERATE ── */
   document.getElementById('genBtn').addEventListener('click', generate);
+  document.getElementById('hooksBtn').addEventListener('click', generateHooks);
+
+  async function generateHooks() {
+    const key = apiInput.value.trim();
+    if (!key || !selStage || !selAngle) return;
+
+    const btn = document.getElementById('hooksBtn');
+    const out = document.getElementById('output');
+    const stage = STAGES[selStage];
+
+    btn.disabled = true;
+    btn.textContent = 'Generando hooks...';
+    out.innerHTML = `<div class="loading-state"><div class="spinner"></div><p class="loading-text">Escribiendo 5 hooks para testear...</p></div>`;
+
+    const hooksPrompt = `Eres copywriter senior de performance para Meta Ads de Kiper, reloj inteligente para niños 6–12 años en Colombia. La marca le habla al papá con criterio, no con miedo: cálido, seguro, inteligente, nunca alarmista ni culposo.
+
+TENSIÓN CENTRAL DEL PAPÁ: "quiero saber de mi hijo, pero no quiero darle un celular".
+ÁNGULO: Ángulo ${selAngle.n} — "${selAngle.t}".
+${stage.prompt}
+
+Genera 5 HOOKS distintos para este ángulo y etapa, pensados para TESTEAR cuál frena el scroll.
+
+REGLAS DEL HOOK:
+- Máx 8 palabras. Una sola idea. Su único trabajo es detener el scroll.
+- Cada hook debe ser de UNO de estos tres tipos, y debes incluir variedad entre los tres:
+  · "tension": nombra la tensión exacta del papá.
+  · "curiosidad": abre un loop (pregunta, dato o frase incompleta) que obligue a deslizar.
+  · "reframe": idea contraintuitiva o que rompe un falso dilema.
+- Escritura en oración, habla de tú. Sin frases motivacionales vagas ni slogans que sirvan para cualquier marca. Sin "peligro/riesgo/adicción/amenaza".
+
+Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
+{ "hooks": [ { "texto": "el hook", "tipo": "tension|curiosidad|reframe" } ] }`;
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 800,
+          messages: [{ role: 'user', content: hooksPrompt }]
+        })
+      });
+
+      if (!resp.ok) {
+        const errBody = await resp.text();
+        throw new Error(`HTTP ${resp.status}: ${errBody.slice(0, 400)}`);
+      }
+
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+      const raw = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('No se encontró JSON en la respuesta.\n\nRespuesta: ' + raw.slice(0, 300));
+
+      const parsed = JSON.parse(match[0]);
+      if (!parsed.hooks || !Array.isArray(parsed.hooks)) throw new Error('Estructura inesperada en el JSON.');
+
+      renderHooks(parsed.hooks);
+
+    } catch (err) {
+      out.innerHTML = `<div class="error-card">
+        <div class="error-title">Error al generar hooks</div>
+        <div class="error-body">${err.message}</div>
+      </div>`;
+    }
+
+    btn.disabled = false;
+    btn.textContent = '⚡ Generar 5 hooks para testear';
+  }
+
+  function renderHooks(hooks) {
+    const out = document.getElementById('output');
+    const stage = STAGES[selStage];
+    const typeLabel = { tension: 'Tensión', curiosidad: 'Curiosidad', reframe: 'Reframe' };
+    let html = `
+      <div class="carousel-header">
+        <div class="carousel-meta">
+          <div class="carousel-chips">
+            <span class="chip chip-stage">${stage.name} · ${stage.tag}</span>
+            <span class="chip chip-count">${hooks.length} hooks</span>
+          </div>
+          <span class="carousel-angle">Hooks para testear · Ángulo ${selAngle.n}: ${selAngle.t}</span>
+        </div>
+      </div>`;
+
+    hooks.forEach((h, i) => {
+      const t = (h.tipo || 'curiosidad').toLowerCase();
+      const cls = ['tension','curiosidad','reframe'].includes(t) ? t : 'curiosidad';
+      html += `
+        <div class="hook-card" style="animation-delay:${i * 0.06}s">
+          <div class="hook-index">${i+1}</div>
+          <div class="hook-main">
+            <div class="hook-text">${h.texto || ''}</div>
+            <span class="hook-type type-${cls}">${typeLabel[cls]}</span>
+          </div>
+          <button class="btn-copy" onclick="copyText('${(h.texto||'').replace(/'/g,"\\'")}', this)">Copiar</button>
+        </div>`;
+    });
+    out.innerHTML = html;
+  }
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    btn.textContent = '✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1800);
+  }
 
   async function generate() {
     const key = apiInput.value.trim();
@@ -622,7 +796,7 @@ Tono: cálido, seguro, inteligente. Nunca alarmista. Nunca culposo. Nunca corpor
 
 PRODUCTO: Kiper — reloj inteligente para niños 6–12 años. La alternativa al smartphone para el papá que quiere conexión real, no vigilancia.
 FUNCIONES CLAVE: llamadas solo a contactos aprobados, mensajes de voz, GPS en tiempo real, foto remota desde el reloj, juegos educativos, control parental por WhatsApp. Sin redes sociales, sin apps, sin navegador.
-OFERTA (úsala solo cuando la etapa lo permita): precio $399.900 COP, plan mensual $32.900 COP, pago contraentrega disponible en Colombia. Producto de decisión, no de impulso.
+OFERTA (úsala solo cuando la etapa lo permita): antes $449.900, hoy $399.900 COP. Plan mensual $32.900 (ilimitado, sin permanencia, primer mes gratis incluido). Envío gratis y pago contraentrega en Colombia. Producto de decisión, no de impulso.
 
 ÁNGULO: Ángulo ${selAngle.n} — "${selAngle.t}"
 
@@ -631,7 +805,13 @@ ${stage.prompt}
 Genera exactamente ${slideCount + 2} slides: 1 hook + ${slideCount} contenido + 1 CTA.
 
 REGLAS DE COPY — MUY IMPORTANTES:
-- Hook: máx 8 palabras. Una sola idea. Que pare el scroll.
+- HOOK (lo más importante del carrusel): máx 8 palabras, una sola idea. Su único trabajo es DETENER EL SCROLL. Debe hacer UNA de estas tres cosas:
+  1) Nombrar la tensión exacta del papá (ej. "saber de tu hijo sin darle celular").
+  2) Abrir un loop de curiosidad que obligue a deslizar: una pregunta, un dato o una afirmación incompleta. No resuelvas la idea en el hook.
+  3) Romper el patrón con algo contraintuitivo o un reframe (ej. "el mejor primer celular de tu hijo no es un celular").
+- PROHIBIDO en el hook: frases motivacionales, slogans aspiracionales vagos o afirmaciones que podrían servir para cualquier marca.
+  Ejemplo de hook DÉBIL: "Éxito profesional, éxito como papá" — afirma una meta, no genera tensión ni curiosidad, no para el scroll.
+  Ejemplo FUERTE del mismo ángulo: "Eres el mejor en tu trabajo. ¿Y a las 3 p.m.?" — abre un loop con un momento concreto.
 - Título de cada slide: máx 5 palabras. Concreto y humano.
 - Mensaje de cada slide: máx 2 frases cortas, máx 18 palabras en total. Una idea por slide.
 - CTA: máx 10 palabras. Botón: máx 3 palabras.
@@ -639,11 +819,13 @@ REGLAS DE COPY — MUY IMPORTANTES:
 - Sin párrafos, sin listas, sin signos de exclamación de más, sin inglés innecesario.
 - Nada de palabras como "peligro", "riesgo", "adicción", "amenaza". Tono positivo y aspiracional.
 
-REGLAS DE IMAGEN — describe una slide DISEÑADA en el sistema visual de Kiper, NO fotografía ni render de IA:
-- Fondo arena #F0EDE6. Pasteles planos de la paleta (blush #F2C4CE, lavender #C9B8E8, mint #A8D8C8, peach #F5C49A, sky #A3CDED). Máximo 4 colores por slide.
-- Elementos ilustrativos simples y cálidos (sol, arcoíris, corazón, planeta, nube). Máximo 3 por slide.
-- Tipografía Plus Jakarta Sans, texto alineado a la izquierda, mucho espacio en blanco, sombras suaves.
-- PROHIBIDO: fotografía realista, render 3D, gradientes complejos, estética de IA genérica, colores neón fuera de la paleta.
+REGLAS DE IMAGEN — cada slide tiene un SUJETO (foreground) sobre un FONDO en el sistema Kiper:
+- Empieza SIEMPRE la descripción nombrando el sujeto y VARÍALO entre slides. No repitas el mismo sujeto en slides seguidas. Rota entre:
+  "Familia ..." · "Niña ..." · "Niño ..." · "Papá con su hijo ..." · "Mamá con su hija ..." · "Solo el reloj Kiper ..." · "Manos del niño con el reloj ..." · "Niño jugando ..." · "Papá mirando el celular tranquilo ...".
+  El sujeto es cálido y real (foto luminosa de gente colombiana real o product shot limpio del reloj), nunca render 3D ni estética de IA.
+- FONDO y tratamiento siempre en el sistema visual de Kiper: base arena #F0EDE6, pasteles planos de la paleta (blush #F2C4CE, lavender #C9B8E8, mint #A8D8C8, peach #F5C49A, sky #A3CDED), máximo 4 colores. Acentos ilustrativos simples (sol, arcoíris, corazón, nube), máximo 3 por slide.
+- Texto en Plus Jakarta Sans, alineado a la izquierda, mucho espacio en blanco, sombras suaves.
+- PROHIBIDO: gradientes complejos, colores neón fuera de la paleta, estética de IA genérica, sujetos repetidos slide tras slide.
 
 Responde ÚNICAMENTE con este JSON (sin texto adicional, sin markdown):
 {
